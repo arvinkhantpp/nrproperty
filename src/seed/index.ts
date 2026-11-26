@@ -115,7 +115,11 @@ export async function seed(payload: Payload) {
         order: i,
         heroImage: img.white,
         intro: richText(
-          `[Placeholder] A short introduction to living in ${en}: schools, hospitals, roads and what makes it sought-after.`,
+          `[Placeholder] A short introduction to living in ${en}: what makes it sought-after and who it suits.`,
+          '### Schools and hospitals',
+          `[Placeholder] The nearest schools, colleges and hospitals, with travel times.`,
+          '### Getting around',
+          `[Placeholder] Main roads, distance to the airport and to business districts.`,
         ),
       },
     })
@@ -335,7 +339,11 @@ export async function seed(payload: Payload) {
           percent: p.percent,
           updates:
             p.percent > 0 && p.percent < 100
-              ? [{ date: '2026-10-01', note: '[Placeholder monthly update]', photos: [p.cover] }]
+              ? [
+                  { date: '2026-11-01', note: '[Placeholder] What happened on site this month.', photos: [p.cover, ...gallery.slice(1, 4)] },
+                  { date: '2026-10-01', note: '[Placeholder] Previous month’s update.', photos: gallery.slice(1, 3) },
+                  { date: '2026-09-01', note: '[Placeholder] An earlier update.', photos: [p.cover] },
+                ]
               : [],
         },
         faqs: [
@@ -846,8 +854,16 @@ export async function seed(payload: Payload) {
           ],
         },
         {
-          blockType: 'faq' as const,
+          blockType: 'testimonials' as const,
           background: 'cream' as const,
+          eyebrow: 'From abroad',
+          title: 'Bought from abroad, *handed over on time.*',
+          filter: 'nrb' as const,
+          limit: 3,
+        },
+        {
+          blockType: 'faq' as const,
+          background: 'sand' as const,
           items: [
             {
               question: 'Can I buy without visiting Bangladesh?',
@@ -926,6 +942,35 @@ export async function seed(payload: Payload) {
             '## Your choices',
             `To see or delete your data, email ${SITE_DEFAULTS.email}.`,
           ),
+        },
+      ],
+    },
+    // Fixed routes: the first Hero sets the heading; any other blocks show below the list.
+    {
+      title: 'Blog',
+      slug: 'blog',
+      layout: [
+        {
+          blockType: 'hero' as const,
+          background: 'ink' as const,
+          variant: 'plain' as const,
+          eyebrow: 'Guides & news',
+          title: 'Know more, *buy with confidence.*',
+          description: 'Plain-language guides on buying, land sharing and buying from abroad.',
+        },
+      ],
+    },
+    {
+      title: 'Construction status',
+      slug: 'construction-status',
+      layout: [
+        {
+          blockType: 'hero' as const,
+          background: 'ink' as const,
+          variant: 'plain' as const,
+          eyebrow: 'Construction status',
+          title: 'Every project, *month by month.*',
+          description: 'See where each building stands today. Photos and notes are updated every month.',
         },
       ],
     },
@@ -1011,6 +1056,15 @@ export async function seed(payload: Payload) {
             { label: 'Upcoming projects', href: '/projects?status=upcoming' },
             { label: 'Completed projects', href: '/projects?status=completed' },
             { label: 'Construction status', href: '/construction-status' },
+          ],
+        },
+        {
+          title: 'Areas',
+          links: [
+            { label: 'Bashundhara R/A', href: '/apartments-in-bashundhara' },
+            { label: 'Dhanmondi', href: '/apartments-in-dhanmondi' },
+            { label: 'Gulshan', href: '/apartments-in-gulshan' },
+            { label: 'Uttara', href: '/apartments-in-uttara' },
           ],
         },
         {

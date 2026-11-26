@@ -199,3 +199,42 @@ export async function getPost(slug: string, locale: Locale): Promise<Post | null
   if (draft) return run()
   return unstable_cache(run, ['post', slug, locale], { tags: [tags.collection('posts'), tags.doc('posts', slug)] })()
 }
+
+export async function getArea(slug: string, locale: Locale) {
+  const run = async () => {
+    const payload = await payloadClient()
+    const res = await payload.find({ collection: 'areas', where: { slug: { equals: slug } }, locale, depth: 1, limit: 1 })
+    return res.docs[0] ?? null
+  }
+  return unstable_cache(run, ['area', slug, locale], { tags: [tags.collection('areas')] })()
+}
+
+/** Published projects for the construction status page: under construction first, then upcoming, then handed over. */
+export async function getProgressProjects(locale: Locale) {
+  const run = async () => {
+    const payload = await payloadClient()
+    const res = await payload.find({
+      collection: 'projects',
+      where: { _status: { equals: 'published' } },
+      locale,
+      depth: 1,
+      limit: 100,
+      sort: 'order',
+    })
+    const rank = { ongoing: 0, upcoming: 1, completed: 2 } as Record<string, number>
+    return [...res.docs].sort((a, b) => (rank[a.status ?? ''] ?? 3) - (rank[b.status ?? ''] ?? 3))
+  }
+  return unstable_cache(run, ['progress-projects', locale], { tags: [tags.collection('projects')] })()
+}
+
+/**
+ * Optional admin-editable intro for a fixed route (blog, construction status). If a Page with this
+ * slug exists, its first Hero block supplies the heading and its other blocks render below the content.
+ */
+export async function getRouteContent(slug: string, locale: Locale) {
+  const page = await getPage(slug, locale)
+  const layout = page?.layout ?? []
+  const first = layout[0]
+  const hero = first?.blockType === 'hero' ? first : null
+  return { page, hero, rest: hero ? layout.slice(1) : layout }
+}
