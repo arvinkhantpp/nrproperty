@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
-import { useState, useTransition } from 'react'
+import { useRef, useState, useTransition } from 'react'
 import { useForm, type Resolver } from 'react-hook-form'
 
 import { Button, Input, Select, Textarea, type FieldTheme } from '@/components/ui'
@@ -13,9 +13,12 @@ import { schemas, type FormType } from '@/lib/forms/schemas'
 import { submitLead } from '@/lib/forms/submit'
 import { getAttribution, newEventId } from '@/lib/tracking/attribution'
 
+import { DocumentsField, uploadDocuments } from './DocumentsField'
+import { Turnstile, type TurnstileHandle } from './Turnstile'
+
 type Values = Record<string, string>
 
-type Kind = 'text' | 'tel' | 'email' | 'date' | 'number' | 'textarea' | 'select' | 'radio'
+type Kind = 'text' | 'tel' | 'email' | 'date' | 'number' | 'textarea' | 'select' | 'radio' | 'files'
 type FieldDef = {
   name: string
   kind: Kind
@@ -51,6 +54,7 @@ const FIELDS: Record<FormType, FieldDef[]> = {
     { name: 'landSizeKatha', kind: 'number', required: true, half: true, inputMode: 'decimal' },
     { name: 'frontRoadFt', kind: 'number', half: true, inputMode: 'numeric' },
     { name: 'ownership', kind: 'radio', required: true, options: 'ownership' },
+    { name: 'documents', kind: 'files' },
     MESSAGE,
   ],
   nrb: [
@@ -125,6 +129,12 @@ export function LeadForm({
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [formError, setFormError] = useState<string | null>(null)
+  const [files, setFiles] = useState<File[]>([])
+  const [fileError, setFileError] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
+  const [token, setToken] = useState('')
+  const turnstile = useRef<TurnstileHandle>(null)
+  const honeypot = useRef<HTMLInputElement>(null)
   const config = site.forms[type]
 
   const fields = FIELDS[type].filter(
@@ -175,12 +185,27 @@ export function LeadForm({
     const eventId = newEventId()
     const payloadValues = { ...values, ...(lockProject && projectId ? { project: projectId } : {}) }
     startTransition(async () => {
+      let documents: string[] = []
+      if (files.length) {
+        setUploading(true)
+        const up = await uploadDocuments(files).catch(() => ({ ok: false as const, error: 'uploadFailed' }))
+        setUploading(false)
+        if (!up.ok) {
+          setFormError(tv.has(up.error as 'generic') ? tv(up.error as 'generic') : tv('generic'))
+          return
+        }
+        documents = up.refs
+      }
       const res = await submitLead({
         type,
         values: payloadValues,
         tracking: { ...getAttribution(), eventId },
+        turnstileToken: token || undefined,
+        documents,
+        website: honeypot.current?.value || undefined,
       }).catch(() => ({ ok: false as const, error: 'generic' }))
       if (!res.ok) {
+        turnstile.current?.reset()
         if ('fieldErrors' in res && res.fieldErrors) {
           for (const [name, message] of Object.entries(res.fieldErrors)) setError(name, { message })
         }
@@ -199,7 +224,7 @@ export function LeadForm({
   const dark = theme === 'dark'
 
   return (
-    <form onSubmit={onSubmit} noValidate className={cn('grid grid-cols-1 gap-4 sm:grid-cols-2', className)}>
+    <form onSubmit={onSubmit} noValidate className={cn('relative grid grid-cols-1 gap-4 sm:grid-cols-2', className)}>
       {fields.map((f) => {
         const common = {
           label: label(f.name),
@@ -227,6 +252,19 @@ export function LeadForm({
               rows={3}
               placeholder={placeholder(f.name)}
               {...register(f.name)}
+            />
+          )
+        }
+        if (f.kind === 'files') {
+          return (
+            <DocumentsField
+              key={f.name}
+              label={label(f.name)}
+              files={files}
+              onChange={setFiles}
+              error={fileError ? tv(fileError as 'fileType') : undefined}
+              onError={setFileError}
+              dark={dark}
             />
           )
         }
@@ -277,6 +315,15 @@ export function LeadForm({
         )
       })}
 
+      {/* Honeypot: hidden from people and screen readers; bots that fill it are discarded. */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label>
+          Website
+          <input ref={honeypot} type="text" name="website" tabIndex={-1} autoComplete="off" />
+        </label>
+      </div>
+      <Turnstile ref={turnstile} onToken={setToken} />
+
       <div className="flex flex-col gap-3 sm:col-span-2">
         {formError ? (
           <p
@@ -290,7 +337,7 @@ export function LeadForm({
           </p>
         ) : null}
         <Button type="submit" size="lg" fullWidth loading={pending}>
-          {pending ? t('submitting') : submitLabel || config.submitLabel || t(`${type}Submit` as 'enquirySubmit')}
+          {uploading ? t('uploading') : pending ? t('submitting') : submitLabel || config.submitLabel || t(`${type}Submit` as 'enquirySubmit')}
         </Button>
         {showPromise ? (
           <p className={cn('text-center text-small', dark ? 'text-cream/70' : 'text-muted')}>{t('callbackPromise')}</p>

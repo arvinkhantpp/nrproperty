@@ -40,7 +40,8 @@ export const Users: CollectionConfig = {
       name: 'receivesAutoAssign',
       label: 'Receives auto-assigned leads',
       type: 'checkbox',
-      defaultValue: false,
+      // New sales users join the round-robin straight away; untick to pause someone (e.g. on leave).
+      defaultValue: true,
       access: { update: isAdminField },
       admin: { condition: (data) => data?.role === 'sales' },
     },
