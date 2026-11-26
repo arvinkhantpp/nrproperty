@@ -31,7 +31,10 @@ export const slugField = (sourceField = 'title'): TextField => ({
   },
 })
 
-export const seoGroup = (): GroupField => ({
+/** SEO fields plus a live Google preview. `preview` sets the URL prefix and fallback title field. */
+export const seoGroup = (
+  preview: { basePath?: string; titleField?: string; descriptionField?: string } = {},
+): GroupField => ({
   name: 'seo',
   label: 'SEO',
   type: 'group',
@@ -41,6 +44,18 @@ export const seoGroup = (): GroupField => ({
     { name: 'metaDescription', type: 'textarea', localized: true, maxLength: 170 },
     { name: 'ogImage', label: 'Share image', type: 'upload', relationTo: 'media' },
     { name: 'noIndex', label: 'Hide from Google', type: 'checkbox', defaultValue: false },
+    {
+      name: 'serpPreview',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: {
+            path: '/admin/components/SerpPreview#SerpPreview',
+            clientProps: { titleField: 'title', ...preview },
+          },
+        },
+      },
+    },
   ],
 })
 

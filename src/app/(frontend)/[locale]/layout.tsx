@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import type { ReactNode } from 'react'
 
 import { AnnouncementBar } from '@/components/site/AnnouncementBar'
+import { DraftBar } from '@/components/site/DraftBar'
 import { AttributionCapture } from '@/components/site/AttributionCapture'
 import { BrandingStyle } from '@/components/site/BrandingStyle'
 import { FormModal } from '@/components/site/FormModal'
@@ -88,6 +89,7 @@ export default async function LocaleLayout({ children, params }: Props) {
               >
                 {t('skipToContent')}
               </a>
+              <DraftBar />
               {announcement.enabled ? (
                 <AnnouncementBar text={announcement.text} label={announcement.label} href={announcement.href} />
               ) : null}
