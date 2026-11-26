@@ -11,6 +11,7 @@ import { ProjectGallery } from '@/components/projects/ProjectGallery'
 import { VideoEmbed } from '@/components/projects/VideoEmbed'
 import { RichText } from '@/components/site/RichText'
 import { TrackViewContent } from '@/components/tracking/Analytics'
+import { areaPath } from '@/lib/areas'
 import { Accordion, Breadcrumbs, Icon, ProjectCard, StatusBadge, type IconName, type ProjectStatus } from '@/components/ui'
 import type { Locale } from '@/i18n/routing'
 import { getProject, getProjects } from '@/lib/cms'
@@ -65,6 +66,7 @@ export default async function ProjectPage({ params }: Props) {
   const f = p.facts ?? {}
   const id = String(p.id)
   const name = p.name ?? ''
+  const areaDoc = typeof p.area === 'object' ? p.area : null
 
   const gallery = (p.gallery ?? [])
     .map((m) => {
@@ -127,7 +129,14 @@ export default async function ProjectPage({ params }: Props) {
     <>
       <div className="bg-cream">
         <div className="container-site hidden pt-6 sm:block lg:pt-8">
-          <Breadcrumbs items={[{ label: tc('home'), href: '/' }, { label: t('projects'), href: '/projects' }, { label: name }]} />
+          <Breadcrumbs
+            items={[
+              { label: tc('home'), href: '/' },
+              { label: t('projects'), href: '/projects' },
+              ...(areaDoc?.slug ? [{ label: areaDoc.name ?? '', href: areaPath(areaDoc.slug) }] : []),
+              { label: name },
+            ]}
+          />
         </div>
 
         {/* Phones: edge-to-edge photo with the title on a rounded sheet over it. */}

@@ -23,7 +23,8 @@
     "city": "Dhaka",
     "projectStatus": "Project status",
     "skipToContent": "Skip to content",
-    "katha": "katha"
+    "katha": "katha",
+    "talkToAdvisor": "Talk to an advisor"
   },
   "status": {
     "ongoing": "Ongoing",
@@ -189,7 +190,31 @@
       "landowner": "Landowners",
       "nrb": "NRB",
       "news": "News"
-    }
+    },
+    "title": "Blog",
+    "metaTitle": "Blog: buying, land and NRB guides",
+    "metaDescription": "Practical guides on buying an apartment in Dhaka, land-sharing joint ventures and buying from abroad.",
+    "eyebrow": "Guides & news",
+    "heading": "Know more, *buy with confidence.*",
+    "intro": "Plain-language guides on buying, land sharing and buying from abroad.",
+    "all": "All",
+    "filterLabel": "Category",
+    "emptyTitle": "No articles yet",
+    "emptyBody": "New guides are on the way. Meanwhile, talk to an advisor.",
+    "by": "By {name}",
+    "minRead": "{n} min read",
+    "relatedProjects": "Projects in this article",
+    "morePosts": "Keep reading",
+    "enquireTitle": "Questions about buying?",
+    "enquireBody": "Leave your number and an advisor will call you back.",
+    "share": "Share",
+    "shareWhatsapp": "Share on WhatsApp",
+    "shareFacebook": "Share on Facebook",
+    "copyLink": "Copy link",
+    "copied": "Link copied",
+    "pagination": "Blog pages",
+    "previous": "Previous page",
+    "next": "Next page"
   },
   "gallery": {
     "label": "Photo gallery",
@@ -282,5 +307,40 @@
     "body": "We use cookies to measure our ads and improve the site. See our <link>Privacy Policy</link>.",
     "accept": "Accept",
     "decline": "Decline"
+  },
+  "construction": {
+    "title": "Construction status",
+    "metaTitle": "Construction status of NR Property projects",
+    "metaDescription": "Live construction progress for every NR Property project, with monthly photos and the current stage.",
+    "eyebrow": "Construction status",
+    "heading": "Every project, *month by month.*",
+    "intro": "See where each building stands today. Photos and notes are updated every month.",
+    "underConstruction": "Under construction",
+    "upcoming": "Starting soon",
+    "handedOver": "Handed over",
+    "stage": "Current stage",
+    "complete": "{n}% complete",
+    "lastUpdate": "Last update {date}",
+    "noUpdates": "Monthly updates start when construction begins.",
+    "viewProject": "View project",
+    "photos": "Site photos for {name}",
+    "handover": "Handover {date}",
+    "updatesTitle": "Get the monthly update on WhatsApp",
+    "updatesBody": "Own a flat or thinking about one? We send progress photos every month.",
+    "updatesCta": "Send me updates"
+  },
+  "area": {
+    "metaTitle": "Apartments for sale in {area}, Dhaka",
+    "metaDescription": "NR Property apartments in {area}: ongoing, upcoming and completed projects with prices, sizes and floor plans.",
+    "eyebrow": "Apartments in {area}",
+    "heading": "Apartments for sale in *{area}*",
+    "projectsTitle": "Our projects in {area}",
+    "projectsCount": "{count, plural, =0 {No projects yet} one {# project} other {# projects}}",
+    "emptyBody": "We don’t have a project in {area} right now. Tell us what you’re looking for and we’ll call you first when one opens.",
+    "about": "Living in {area}",
+    "seeAll": "See all projects in {area}",
+    "otherAreas": "Other areas",
+    "enquireTitle": "Looking in {area}?",
+    "enquireBody": "Tell us your size and budget. An advisor will call with options."
   }
 }

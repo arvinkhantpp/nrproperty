@@ -29,6 +29,7 @@ export async function SiteFooter({ data }: { data: SiteData }) {
   const socials = SOCIALS.filter((s) => contact.socials?.[s])
   const company = branding.companyName || 'NR Property'
 
+  const wide = (footer.columns?.length ?? 0) > 3
   return (
     <footer className="bg-ink pb-28 text-cream lg:pb-0">
       <div className="container-site grid gap-12 pt-16 pb-12 lg:grid-cols-[1.3fr_2fr] lg:gap-20 lg:pt-24">
@@ -75,7 +76,7 @@ export async function SiteFooter({ data }: { data: SiteData }) {
           ) : null}
         </div>
 
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3">
+        <div className={wide ? 'grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4' : 'grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3'}>
           {(footer.columns ?? []).map((col) => (
             <div key={col.id ?? col.title}>
               <h2 className="text-eyebrow text-gold-light">{col.title}</h2>
@@ -88,9 +89,10 @@ export async function SiteFooter({ data }: { data: SiteData }) {
               </ul>
             </div>
           ))}
-          <div className="col-span-2 md:col-span-1">
+          {/* With four link columns, "Visit us" becomes a full-width row underneath. */}
+          <div className={wide ? 'col-span-2 border-t border-white/10 pt-8 md:col-span-4' : 'col-span-2 md:col-span-1'}>
             <h2 className="text-eyebrow text-gold-light">{t('visit')}</h2>
-            <address className="mt-4 flex flex-col gap-3 text-body text-cream/70 not-italic">
+            <address className={wide ? 'mt-4 flex flex-col gap-3 text-body text-cream/70 not-italic md:flex-row md:flex-wrap md:gap-x-10' : 'mt-4 flex flex-col gap-3 text-body text-cream/70 not-italic'}>
               {contact.address ? <span className="whitespace-pre-line">{contact.address}</span> : null}
               {contact.officeHours ? <span>{contact.officeHours}</span> : null}
               {(contact.emails ?? []).slice(0, 2).map((e) => (

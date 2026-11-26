@@ -16,7 +16,8 @@ export const Pages: CollectionConfig = {
     useAsTitle: 'title',
     group: 'Content',
     defaultColumns: ['title', 'slug', '_status', 'updatedAt'],
-    description: 'Drag sections to reorder, tick "Hide this section" to hide one.',
+    description:
+      'Drag sections to reorder, tick "Hide this section" to hide one. For "blog" and "construction-status" the first Hero sets the page heading and other sections show below the list.',
     preview: previewUrl(''),
   },
   access: {

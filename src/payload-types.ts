@@ -577,7 +577,7 @@ export interface User {
   collection: 'users';
 }
 /**
- * Drag sections to reorder, tick "Hide this section" to hide one.
+ * Drag sections to reorder, tick "Hide this section" to hide one. For "blog" and "construction-status" the first Hero sets the page heading and other sections show below the list.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages".
