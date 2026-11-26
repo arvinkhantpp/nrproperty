@@ -21,12 +21,12 @@ pnpm dev
 
 ## Scripts
 
-| Command | What it does |
-|---|---|
-| `pnpm dev` | Development server |
-| `pnpm check` | Lint + typecheck + production build |
-| `pnpm screenshots` | Full-page screenshots at 375/768/1440 into `docs/screenshots/_review` (dev server must be running) |
-| `pnpm generate:types` | Regenerate `src/payload-types.ts` after changing collections |
+| Command               | What it does                                                                                       |
+| --------------------- | -------------------------------------------------------------------------------------------------- |
+| `pnpm dev`            | Development server                                                                                 |
+| `pnpm check`          | Lint + typecheck + production build                                                                |
+| `pnpm screenshots`    | Full-page screenshots at 375/768/1440 into `docs/screenshots/_review` (dev server must be running) |
+| `pnpm generate:types` | Regenerate `src/payload-types.ts` after changing collections                                       |
 
 ## Deploy
 

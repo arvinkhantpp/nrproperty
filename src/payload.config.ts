@@ -6,13 +6,42 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
+import type { CollectionConfig, GlobalConfig } from 'payload'
+
+import { Amenities } from './collections/Amenities'
+import { Areas } from './collections/Areas'
+import { LeadFiles } from './collections/LeadFiles'
+import { Leads } from './collections/Leads'
 import { Media } from './collections/Media'
+import { Pages } from './collections/Pages'
+import { Posts } from './collections/Posts'
+import { Projects } from './collections/Projects'
+import { Team } from './collections/Team'
+import { Testimonials } from './collections/Testimonials'
 import { Users } from './collections/Users'
+import { globals } from './globals'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // Cloudflare R2 (S3-compatible) in production; local disk when S3_BUCKET is not set.
 const useS3 = Boolean(process.env.S3_BUCKET)
+
+// Sales users only work with leads; hide everything else from their admin navigation.
+type WithAdmin = { admin?: { hidden?: unknown } }
+const hideFromSales = <T extends CollectionConfig | GlobalConfig>(c: T): T =>
+  (c as WithAdmin).admin?.hidden !== undefined
+    ? c
+    : ({
+        ...c,
+        admin: {
+          ...c.admin,
+          hidden: ({ user }: { user?: { role?: string } | null }) => user?.role === 'sales',
+        },
+      } as T)
+
+const collections = [Pages, Projects, Areas, Amenities, Testimonials, Posts, Team, Media].map(
+  hideFromSales,
+)
 
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || '',
@@ -21,7 +50,8 @@ export default buildConfig({
     meta: { titleSuffix: ' · NR Property Admin' },
     importMap: { baseDir: path.resolve(dirname) },
   },
-  collections: [Users, Media],
+  collections: [Leads, LeadFiles, ...collections, Users],
+  globals: globals.map(hideFromSales),
   localization: {
     locales: [
       { label: 'English', code: 'en' },
@@ -42,7 +72,8 @@ export default buildConfig({
   plugins: [
     s3Storage({
       enabled: useS3,
-      collections: { media: true },
+      // Landowner documents go under a private/ prefix and are only served through Payload's access control.
+      collections: { media: true, 'lead-files': { prefix: 'private' } },
       bucket: process.env.S3_BUCKET || '',
       config: {
         endpoint: process.env.S3_ENDPOINT,

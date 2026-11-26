@@ -15,7 +15,8 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
-    "screenshots": "node scripts/screenshots.mjs"
+    "screenshots": "node scripts/screenshots.mjs",
+    "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/seed/index.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.94.2",
