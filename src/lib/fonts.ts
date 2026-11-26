@@ -8,17 +8,18 @@ export const cormorant = Cormorant_Garamond({
   display: 'swap',
 })
 
+// Variable font: one file covers every weight.
 export const manrope = Manrope({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
   variable: '--font-manrope',
   display: 'swap',
 })
 
 // Only downloaded by the browser when Bengali characters are on the page (unicode-range).
+// Two weights keep the Bangla download small: 500 renders as 400 and 700 as 600.
 export const hind = Hind_Siliguri({
   subsets: ['bengali', 'latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '600'],
   variable: '--font-hind',
   display: 'swap',
   preload: false,

@@ -6,6 +6,7 @@ import type { ReactNode } from 'react'
 
 import { AnnouncementBar } from '@/components/site/AnnouncementBar'
 import { DraftBar } from '@/components/site/DraftBar'
+import { JsonLd } from '@/components/site/JsonLd'
 import { AttributionCapture } from '@/components/site/AttributionCapture'
 import { BrandingStyle } from '@/components/site/BrandingStyle'
 import { FormModal } from '@/components/site/FormModal'
@@ -20,6 +21,9 @@ import { ToastProvider } from '@/components/ui/Toast'
 import { routing, type Locale } from '@/i18n/routing'
 import { fontVariables } from '@/lib/fonts'
 import { getGlobal } from '@/lib/cms'
+import { organizationLd } from '@/lib/jsonld'
+import { fileUrl } from '@/lib/media'
+import { defaultOgImage, SITE_URL, siteNoIndex } from '@/lib/metadata'
 import { clientSiteConfig, getSiteData } from '@/lib/site'
 import { publicTracking } from '@/lib/tracking/config'
 import '@/styles/globals.css'
@@ -36,10 +40,23 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'metadata' })
+  const [seo, branding, og] = await Promise.all([
+    getGlobal('seo', locale as Locale),
+    getGlobal('branding', locale as Locale),
+    defaultOgImage(locale as Locale),
+  ])
+  const favicon = fileUrl(branding.favicon)
+  const siteName = branding.companyName || 'NR Property'
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-    title: { default: t('title'), template: `%s · NR Property` },
-    description: t('description'),
+    metadataBase: new URL(SITE_URL),
+    title: { default: seo.defaultTitle || t('title'), template: seo.titleTemplate || '%s · NR Property' },
+    description: seo.defaultDescription || t('description'),
+    applicationName: siteName,
+    openGraph: { siteName, type: 'website', ...(og ? { images: [{ url: og.src, width: og.width, height: og.height, alt: og.alt }] } : {}) },
+    twitter: { card: 'summary_large_image' },
+    ...(favicon ? { icons: { icon: favicon, apple: favicon } } : {}),
+    formatDetection: { telephone: false },
+    ...(siteNoIndex() ? { robots: { index: false, follow: false } } : {}),
   }
 }
 
@@ -89,6 +106,7 @@ export default async function LocaleLayout({ children, params }: Props) {
               >
                 {t('skipToContent')}
               </a>
+              <JsonLd data={organizationLd({ name: branding.companyName || 'NR Property', contact: data.contact, logo: fileUrl(branding.logoDark) ?? fileUrl(branding.favicon), locale: locale as Locale })} />
               <DraftBar />
               {announcement.enabled ? (
                 <AnnouncementBar text={announcement.text} label={announcement.label} href={announcement.href} />

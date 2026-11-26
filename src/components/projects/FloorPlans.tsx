@@ -37,7 +37,7 @@ function PlanCard({ plan }: { plan: Plan }) {
         type="button"
         onClick={() => plan.image && setZoom(0)}
         disabled={!plan.image}
-        aria-label={t('zoomPlan', { name: plan.name })}
+        aria-label={plan.image ? t('zoomPlan', { name: plan.name }) : undefined}
         className="relative aspect-[4/3] overflow-hidden rounded-md bg-cream disabled:cursor-default"
       >
         {plan.image ? (

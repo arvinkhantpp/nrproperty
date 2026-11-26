@@ -13,6 +13,7 @@ import { getPayload, type CollectionSlug, type Payload } from 'payload'
 
 import { SITE_DEFAULTS } from '@/lib/site-defaults'
 
+import { seedBangla } from './bn'
 import { richText } from './richtext'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -1240,6 +1241,9 @@ export async function seed(payload: Payload) {
       payload.logger.info(`Created admin user ${adminEmail}`)
     }
   }
+
+  payload.logger.info('Writing first-draft Bangla content…')
+  await seedBangla(payload)
 
   payload.logger.info('Seed complete.')
 }

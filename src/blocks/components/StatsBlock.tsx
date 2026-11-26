@@ -13,25 +13,19 @@ export async function StatsBlock({ data, locale }: { data: BlockOf<'stats'>; loc
   const tone = toneOf(data.background)
   return (
     <Section background={data.background} anchorId={data.anchorId} className="!py-12 lg:!py-20">
-      <dl className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4 lg:gap-0">
+      <ul className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4 lg:gap-0">
         {items.slice(0, 4).map((s, i) => (
-          <div
+          <li
             key={s.id ?? i}
             className={cn(
               'flex lg:justify-center lg:px-6',
               i > 0 && (tone === 'light' ? 'lg:border-l lg:border-line' : 'lg:border-l lg:border-white/15'),
             )}
           >
-            {/* StatBlock renders value then label; dl semantics keep screen readers pairing them. */}
-            <div className="flex flex-col">
-              <dt className="sr-only">{s.label}</dt>
-              <dd>
-                <StatBlock value={s.value} label={s.label ?? ''} tone={tone} />
-              </dd>
-            </div>
-          </div>
+            <StatBlock value={s.value} label={s.label ?? ''} tone={tone} />
+          </li>
         ))}
-      </dl>
+      </ul>
     </Section>
   )
 }

@@ -22,7 +22,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const sp = await searchParams
   const t = await getTranslations({ locale, namespace: 'projects' })
   const filtered = Object.entries(sp).some(([k, v]) => k !== 'page' && v)
-  const meta = buildMetadata({ title: t('metaTitle'), description: t('metaDescription'), path: '/projects', locale })
+  const meta = await buildMetadata({ title: t('metaTitle'), description: t('metaDescription'), path: '/projects', locale })
   // Filtered combinations are not separate pages for search engines.
   return filtered ? { ...meta, robots: { index: false, follow: true } } : meta
 }

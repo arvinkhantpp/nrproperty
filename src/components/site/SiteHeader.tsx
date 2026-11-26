@@ -113,7 +113,7 @@ export function SiteHeader({ menu, cta, showHotline, showLanguageSwitch }: Props
             scrolled ? 'h-16 lg:h-18' : 'h-16 lg:h-22',
           )}
         >
-          <Link href="/" aria-label={`${site.companyName}, ${t('home')}`} className="shrink-0">
+          <Link href="/" className="shrink-0">
             <Logo tone="dark" src={site.logo} name={site.companyName.toUpperCase()} subline={site.logoSubline} />
           </Link>
 

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import { LeadForm } from '@/components/forms/LeadForm'
+import { JsonLd } from '@/components/site/JsonLd'
 import { PostCard } from '@/components/site/PostCard'
 import { RichText } from '@/components/site/RichText'
 import { ShareButtons } from '@/components/site/ShareButtons'
@@ -12,8 +12,10 @@ import { getPathname } from '@/i18n/navigation'
 import type { Locale } from '@/i18n/routing'
 import { getPost, getPosts } from '@/lib/cms'
 import { formatDate } from '@/lib/format'
+import { articleLd } from '@/lib/jsonld'
 import { lexicalText, readingMinutes } from '@/lib/lexical-text'
 import { imageOf } from '@/lib/media'
+import { redirectOrNotFound } from '@/lib/redirects'
 import { buildMetadata } from '@/lib/metadata'
 import { toCardProps } from '@/lib/project-card'
 import type { Post, Project, Team } from '@/payload-types'
@@ -25,8 +27,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
   const post = await getPost(slug, locale as Locale)
   if (!post) return {}
-  const meta = buildMetadata({ seo: post.seo, title: post.title, description: post.excerpt, path: `/blog/${slug}`, locale: locale as Locale, image: post.cover })
-  return { ...meta, openGraph: { ...meta.openGraph, type: 'article', publishedTime: post.publishedAt ?? undefined } }
+  const meta = await buildMetadata({ seo: post.seo, title: post.title, description: post.excerpt, path: `/blog/${slug}`, locale: locale as Locale, image: post.cover, type: 'article' })
+  return { ...meta, openGraph: { ...meta.openGraph, type: 'article', publishedTime: post.publishedAt ?? undefined, modifiedTime: post.updatedAt } }
 }
 
 export default async function BlogPostPage({ params }: Props) {
@@ -34,7 +36,7 @@ export default async function BlogPostPage({ params }: Props) {
   const locale = l as Locale
   setRequestLocale(locale)
   const post = await getPost(slug, locale)
-  if (!post) notFound()
+  if (!post) return redirectOrNotFound(`/blog/${slug}`, locale as Locale)
   const t = await getTranslations('blog')
   const tc = await getTranslations('common')
 
@@ -53,6 +55,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <>
+      <JsonLd data={articleLd(post, locale)} />
       <article>
         <header className="bg-cream">
           <div className="container-site flex max-w-[56rem] flex-col gap-5 pt-10 pb-8 lg:pt-14 lg:pb-10">

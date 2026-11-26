@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import { notFound } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import type { ReactNode } from 'react'
 
@@ -11,12 +10,15 @@ import { ProjectGallery } from '@/components/projects/ProjectGallery'
 import { VideoEmbed } from '@/components/projects/VideoEmbed'
 import { RichText } from '@/components/site/RichText'
 import { TrackViewContent } from '@/components/tracking/Analytics'
+import { JsonLd } from '@/components/site/JsonLd'
 import { areaPath } from '@/lib/areas'
 import { Accordion, Breadcrumbs, Icon, ProjectCard, StatusBadge, type IconName, type ProjectStatus } from '@/components/ui'
 import type { Locale } from '@/i18n/routing'
 import { getProject, getProjects } from '@/lib/cms'
 import { formatMonthYear, formatNumber, formatPriceShort, formatSizeRange } from '@/lib/format'
 import { fileUrl, imageOf } from '@/lib/media'
+import { faqLd, projectLd } from '@/lib/jsonld'
+import { redirectOrNotFound } from '@/lib/redirects'
 import { buildMetadata } from '@/lib/metadata'
 import { areaName, PLACEHOLDER_IMAGE, toCardProps } from '@/lib/project-card'
 import type { Amenity, Project } from '@/payload-types'
@@ -59,7 +61,7 @@ export default async function ProjectPage({ params }: Props) {
   const locale = loc as Locale
   setRequestLocale(locale)
   const p = await getProject(slug, locale)
-  if (!p) notFound()
+  if (!p) return redirectOrNotFound(`/projects/${slug}`, locale as Locale)
 
   const t = await getTranslations('project')
   const tc = await getTranslations('common')
@@ -125,8 +127,11 @@ export default async function ProjectPage({ params }: Props) {
     faqs.length ? { id: 'faq', label: t('faq') } : null,
   ].filter((x): x is { id: string; label: string } => Boolean(x))
 
+  const faqData = faqLd(p.faqs ?? [])
   return (
     <>
+      <JsonLd data={projectLd(p, locale as Locale)} />
+      {faqData ? <JsonLd data={faqData} /> : null}
       <div className="bg-cream">
         <div className="container-site hidden pt-6 sm:block lg:pt-8">
           <Breadcrumbs
@@ -196,13 +201,13 @@ export default async function ProjectPage({ params }: Props) {
                   <dl className="grid grid-cols-2 gap-3 md:grid-cols-3">
                     {facts.map((fact) => (
                       <div key={fact.label} className="flex flex-col gap-3 rounded-md bg-white p-4 lg:p-5">
-                        <span aria-hidden="true" className="flex size-10 items-center justify-center rounded-full bg-[#F3ECDF] text-gold-text">
-                          <Icon name={fact.icon} size={18} />
-                        </span>
-                        <div className="flex flex-col">
-                          <dt className="text-[0.6875rem] font-semibold tracking-[1.4px] text-muted uppercase">{fact.label}</dt>
-                          <dd className="text-body-l font-semibold text-ink">{fact.value}</dd>
-                        </div>
+                        <dt className="flex flex-col gap-3 text-[0.6875rem] font-semibold tracking-[1.4px] text-muted uppercase">
+                          <span aria-hidden="true" className="flex size-10 items-center justify-center rounded-full bg-[#F3ECDF] text-gold-text">
+                            <Icon name={fact.icon} size={18} />
+                          </span>
+                          {fact.label}
+                        </dt>
+                        <dd className="-mt-3 text-body-l font-semibold text-ink">{fact.value}</dd>
                       </div>
                     ))}
                   </dl>
