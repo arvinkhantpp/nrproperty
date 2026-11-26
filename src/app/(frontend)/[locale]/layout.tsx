@@ -12,10 +12,15 @@ import { QuickActions } from '@/components/site/QuickActions'
 import { SiteFooter } from '@/components/site/SiteFooter'
 import { SiteHeader } from '@/components/site/SiteHeader'
 import { SiteProvider } from '@/components/site/SiteProvider'
+import { Analytics } from '@/components/tracking/Analytics'
+import { ConsentBanner } from '@/components/tracking/ConsentBanner'
+import { TrackingHead } from '@/components/tracking/TrackingHead'
 import { ToastProvider } from '@/components/ui/Toast'
 import { routing, type Locale } from '@/i18n/routing'
 import { fontVariables } from '@/lib/fonts'
+import { getGlobal } from '@/lib/cms'
 import { clientSiteConfig, getSiteData } from '@/lib/site'
+import { publicTracking } from '@/lib/tracking/config'
 import '@/styles/globals.css'
 
 type Props = {
@@ -49,7 +54,8 @@ export default async function LocaleLayout({ children, params }: Props) {
   setRequestLocale(locale)
   const t = await getTranslations({ locale, namespace: 'common' })
 
-  const data = await getSiteData(locale as Locale)
+  const [data, trackingGlobal] = await Promise.all([getSiteData(locale as Locale), getGlobal('tracking', locale as Locale)])
+  const tracking = publicTracking(trackingGlobal)
   const { header, announcement, branding } = data
   const menu = (header.menu ?? [])
     .filter((m) => m.show !== false && m.label)
@@ -58,9 +64,21 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html lang={locale} className={fontVariables}>
       <head>
+        <TrackingHead config={tracking} />
         <BrandingStyle colors={branding.colors} />
       </head>
       <body>
+        {tracking.gtmId ? (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${tracking.gtmId}`}
+              height="0"
+              width="0"
+              style={{ display: 'none', visibility: 'hidden' }}
+              title="GTM"
+            />
+          </noscript>
+        ) : null}
         <NextIntlClientProvider>
           <SiteProvider config={clientSiteConfig(data)}>
             <ToastProvider>
@@ -88,6 +106,8 @@ export default async function LocaleLayout({ children, params }: Props) {
               <QuickActions />
               <FormModal />
               <AttributionCapture />
+              <Analytics config={tracking} />
+              <ConsentBanner required={tracking.consentRequired && Boolean(tracking.gtmId || tracking.ga4Id || tracking.pixelId || tracking.clarityId || tracking.adsId)} />
             </ToastProvider>
           </SiteProvider>
         </NextIntlClientProvider>

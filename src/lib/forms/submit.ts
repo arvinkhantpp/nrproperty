@@ -9,6 +9,8 @@ import { adoptIncoming, DOC_RULES } from '@/lib/leads/documents'
 import { findDuplicate, isRateLimited } from '@/lib/leads/guards'
 import { runLeadPipeline } from '@/lib/leads/pipeline'
 import { verifyTurnstile } from '@/lib/leads/turnstile'
+import { sendCapiLead } from '@/lib/tracking/capi'
+import { CONSENT_COOKIE } from '@/lib/tracking/config'
 import type { Lead } from '@/payload-types'
 
 import { normaliseBDPhone, normaliseIntlPhone } from './phone'
@@ -158,9 +160,13 @@ export async function submitLead(input: SubmitInput): Promise<SubmitResult> {
     // Notifications run after the response, so the visitor never waits on email or Google.
     // Duplicates (same phone + form within 10 minutes) are saved and linked, but not re-sent.
     if (!duplicate) {
+      const consent = jar.get(CONSENT_COOKIE)?.value
       after(async () => {
         try {
-          await runLeadPipeline(payload, lead.id)
+          const trackingGlobal = await payload.findGlobal({ slug: 'tracking', depth: 0, overrideAccess: true })
+          // Respect the cookie choice: with consent required, only send to Meta after "Accept".
+          const allowed = trackingGlobal.consentRequired === false ? consent !== 'denied' : consent === 'granted'
+          await runLeadPipeline(payload, lead.id, allowed ? { capi: (l) => sendCapiLead(l, trackingGlobal) } : {})
         } catch (err) {
           console.error('[lead pipeline]', err)
         }
