@@ -5,6 +5,10 @@ export type SubmitInput = {
   values: Record<string, unknown>
   tracking: Tracking & { eventId?: string; fbp?: string; fbc?: string }
   turnstileToken?: string
+  /** Landowner documents: tokens from `uploadDocument`, or R2 keys from direct uploads. */
+  documents?: string[]
+  /** Honeypot: real visitors never fill this. */
+  website?: string
 }
 
 export type SubmitResult =

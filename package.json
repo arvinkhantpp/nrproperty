@@ -16,9 +16,12 @@
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "screenshots": "node scripts/screenshots.mjs",
-    "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/seed/index.ts"
+    "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/seed/index.ts",
+    "seed:fresh": "cross-env NODE_OPTIONS=--no-deprecation SEED_FORCE=1 payload run src/seed/index.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.1178.0",
+    "@aws-sdk/s3-request-presigner": "3.1178.0",
     "@hookform/resolvers": "5.2.2",
     "@payloadcms/db-postgres": "3.94.2",
     "@payloadcms/live-preview-react": "3.94.2",
@@ -33,6 +36,7 @@
     "motion": "12.23.24",
     "next": "15.4.11",
     "next-intl": "4.3.12",
+    "nodemailer": "6.10.1",
     "payload": "3.94.2",
     "react": "19.2.9",
     "react-dom": "19.2.9",
@@ -45,6 +49,7 @@
     "@eslint/eslintrc": "3.3.1",
     "@tailwindcss/postcss": "4.1.17",
     "@types/node": "22.19.9",
+    "@types/nodemailer": "6.4.17",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.1",

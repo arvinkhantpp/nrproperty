@@ -13,6 +13,8 @@ const remoteHosts = (process.env.NEXT_PUBLIC_IMAGE_HOSTS ?? '')
 const nextConfig: NextConfig = {
   output: 'standalone',
   poweredByHeader: false,
+  // Landowner documents (up to 10 MB each) are posted to a server action when R2 is not configured.
+  experimental: { serverActions: { bodySizeLimit: '11mb' } },
   images: {
     formats: ['image/avif', 'image/webp'],
     localPatterns: [{ pathname: '/api/media/file/**' }, { pathname: '/images/**' }],

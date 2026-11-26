@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@aws-sdk/client-s3':
+        specifier: 3.1178.0
+        version: 3.1178.0
+      '@aws-sdk/s3-request-presigner':
+        specifier: 3.1178.0
+        version: 3.1178.0
       '@hookform/resolvers':
         specifier: 5.2.2
         version: 5.2.2(react-hook-form@7.62.0(react@19.2.9))
@@ -50,6 +56,9 @@ importers:
       next-intl:
         specifier: 4.3.12
         version: 4.3.12(@types/react@19.2.14)(next@15.4.11(react-dom@19.2.9(react@19.2.9))(react@19.2.9)(sass@1.77.4))(react@19.2.9)(typescript@5.9.3)
+      nodemailer:
+        specifier: 6.10.1
+        version: 6.10.1
       payload:
         specifier: 3.94.2
         version: 3.94.2(graphql@16.11.0)(typescript@5.9.3)
@@ -81,6 +90,9 @@ importers:
       '@types/node':
         specifier: 22.19.9
         version: 22.19.9
+      '@types/nodemailer':
+        specifier: 6.4.17
+        version: 6.4.17
       '@types/react':
         specifier: 19.2.14
         version: 19.2.14
@@ -1583,6 +1595,9 @@ packages:
 
   '@types/node@22.19.9':
     resolution: {integrity: sha512-PD03/U8g1F9T9MI+1OBisaIARhSzeidsUjQaf51fOxrfjeiKN9bLVO06lHuHYjxdnqLWJijJHfqXPSJri2EM2A==}
+
+  '@types/nodemailer@6.4.17':
+    resolution: {integrity: sha512-I9CCaIp6DTldEg7vyUTZi8+9Vo0hi1/T8gv3C89yk1rSAAzoKQ8H8ki/jBYJSFoH/BisgLP8tkZMlQ91CIquww==}
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
@@ -3239,6 +3254,10 @@ packages:
   node-exports-info@1.6.2:
     resolution: {integrity: sha512-kXs9Go0cah0qHVV2v389IXQLdLCeE1xfFtjOAF+iobu0OIoG1pje8At2vMHyaPMiPMnG/LWP50twML21eMcAag==}
     engines: {node: '>= 0.4'}
+
+  nodemailer@6.10.1:
+    resolution: {integrity: sha512-Z+iLaBGVaSjbIzQ4pX6XV41HrooLsQ10ZWPUehGmuantvzWoDVBnmsdUcOIDM1t+yPor5pDhVlDESgOMEGxhHA==}
+    engines: {node: '>=6.0.0'}
 
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -5576,6 +5595,10 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
+  '@types/nodemailer@6.4.17':
+    dependencies:
+      '@types/node': 22.19.9
+
   '@types/parse-json@4.0.2': {}
 
   '@types/pg@8.20.0':
@@ -7478,6 +7501,8 @@ snapshots:
       es-errors: 1.3.0
       object.entries: 1.1.9
       semver: 6.3.2
+
+  nodemailer@6.10.1: {}
 
   normalize-path@3.0.0: {}
 

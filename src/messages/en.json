@@ -81,7 +81,8 @@
     "fileCount": "Up to 5 files",
     "generic": "Something went wrong. Please try again or call us.",
     "spam": "We couldn’t verify you’re human. Please try again.",
-    "rateLimited": "Too many attempts. Please wait a minute and try again."
+    "rateLimited": "Too many attempts. Please wait a minute and try again.",
+    "uploadFailed": "Upload failed. Please try again, or send the documents on WhatsApp."
   },
   "forms": {
     "name": "Full name",
@@ -136,7 +137,8 @@
     "nrbSubmit": "Send Enquiry",
     "contactSubmit": "Send Message",
     "callbackPromise": "An advisor will call you within one working day.",
-    "brochureDescription": "Leave your number and the brochure opens right away."
+    "brochureDescription": "Leave your number and the brochure opens right away.",
+    "uploading": "Uploading documents…"
   },
   "search": {
     "label": "Find a project",

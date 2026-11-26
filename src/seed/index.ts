@@ -1,5 +1,5 @@
 /**
- * Seed script: `pnpm seed` (add `--force` to wipe and re-create content).
+ * Seed script: `pnpm seed` (`pnpm seed:fresh` wipes and re-creates content).
  *
  * Confirmed client details (phone, email, Facebook) are real. Everything else — project names,
  * prices, stats, addresses, licence numbers, testimonials — is a clearly marked [placeholder].
@@ -17,7 +17,8 @@ import { richText } from './richtext'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const imagesDir = path.resolve(dirname, '../../public/images/placeholder')
-const force = process.argv.includes('--force')
+// `pnpm seed:fresh` (payload run does not forward --force from `pnpm seed --force`).
+const force = process.argv.includes('--force') || process.env.SEED_FORCE === '1'
 
 const CONTENT: CollectionSlug[] = [
   'pages',
@@ -57,7 +58,7 @@ export async function seed(payload: Payload) {
   const existing = await payload.count({ collection: 'projects' })
   if (existing.totalDocs > 0 && !force) {
     payload.logger.info(
-      'Content already exists. Run `pnpm seed --force` to wipe and re-seed content.',
+      'Content already exists. Run `pnpm seed:fresh` to wipe and re-seed content.',
     )
     return
   }
@@ -1116,6 +1117,23 @@ export async function seed(payload: Payload) {
         ['land', 'Land / joint venture'],
         ['other', 'Something else'],
       ]),
+    },
+  })
+  // First-draft Bangla for the form titles and buttons (flagged for review).
+  await payload.updateGlobal({
+    slug: 'forms',
+    locale: 'bn',
+    data: {
+      enquiry: {
+        title: 'কল ব্যাক অনুরোধ',
+        submitLabel: 'কল ব্যাক চাই',
+        successMessage: 'ধন্যবাদ। একজন পরামর্শক এক কর্মদিবসের মধ্যে আপনাকে কল করবেন।',
+      },
+      brochure: { title: 'ব্রোশিওর নিন', submitLabel: 'ব্রোশিওর ডাউনলোড (PDF)' },
+      siteVisit: { title: 'সাইট ভিজিট বুক করুন', submitLabel: 'ভিজিট বুক করুন' },
+      landowner: { title: 'আপনার জমির তথ্য দিন', submitLabel: 'জমির তথ্য জমা দিন' },
+      nrb: { title: 'প্রবাসী অনুসন্ধান', submitLabel: 'অনুসন্ধান পাঠান' },
+      contact: { title: 'মেসেজ পাঠান', submitLabel: 'মেসেজ পাঠান' },
     },
   })
   await payload.updateGlobal({
