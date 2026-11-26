@@ -1,4 +1,6 @@
-import type { Endpoint, Where } from 'payload'
+import type { Endpoint } from 'payload'
+
+import { parseLeadFilters } from '@/admin/lib/leadFilters'
 
 import type { Lead } from '@/payload-types'
 
@@ -51,15 +53,9 @@ export const leadsExport: Endpoint = {
   handler: async (req) => {
     if (!req.user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
     const sp = new URL(req.url ?? '', 'http://x').searchParams
-    const and: Where[] = []
     const segment = sp.get('segment')
+    const { where: and } = parseLeadFilters({ q: sp.get('q'), status: sp.get('status'), project: sp.get('project'), from: sp.get('from'), to: sp.get('to') })
     if (segment && ['buyer', 'landowner', 'nrb'].includes(segment)) and.push({ segment: { equals: segment } })
-    const status = sp.get('status')
-    if (status) and.push({ status: { equals: status } })
-    const project = Number(sp.get('project'))
-    if (project) and.push({ project: { equals: project } })
-    const q = (sp.get('q') ?? '').trim().slice(0, 80)
-    if (q) and.push({ or: [{ name: { like: q } }, { phone: { like: q.replace(/[^\d+]/g, '') || q } }, { email: { like: q } }] })
 
     const rows: string[] = [COLUMNS.map(([h]) => h).join(',')]
     for (let page = 1; ; page++) {

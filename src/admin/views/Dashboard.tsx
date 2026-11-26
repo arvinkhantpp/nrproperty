@@ -55,9 +55,9 @@ export async function Dashboard(props: AdminViewServerProps) {
 
   const kpis = [
     { label: 'New leads', value: stats.total, extra: <Delta now={stats.total} before={stats.previousTotal} /> },
-    { label: 'Waiting for a first call', value: stats.newCount, extra: <span className="nr-kpi__delta">Status “New”</span> },
+    { label: 'Leads today', value: stats.today, extra: <span className="nr-kpi__delta">{stats.newCount} waiting for a first call</span> },
     { label: 'Site visits', value: stats.visits, extra: <span className="nr-kpi__delta">Requested or booked</span> },
-    { label: 'Landowner + NRB', value: stats.landowner + stats.nrb, extra: <span className="nr-kpi__delta">{stats.landowner} landowner · {stats.nrb} NRB</span> },
+    { label: 'Landowner leads', value: stats.landowner, extra: <span className="nr-kpi__delta">+ {stats.nrb} NRB</span> },
   ]
 
   return (

@@ -4,6 +4,7 @@ import type { AdminViewServerProps, Where } from 'payload'
 
 import type { Lead } from '@/payload-types'
 
+import { parseLeadFilters } from '../lib/leadFilters'
 import { sourceOf, statusOf, STATUS, timeAgo, TYPE_LABEL } from '../lib/labels'
 import { LeadDrawer, type DrawerLead } from './LeadDrawer'
 
@@ -81,16 +82,10 @@ export async function LeadsInbox(props: AdminViewServerProps) {
   const { payload } = req
   const sp = (props.searchParams ?? {}) as Record<string, string | undefined>
   const tab = TABS.some((t) => t.id === sp.tab) ? sp.tab! : 'all'
-  const q = (sp.q ?? '').trim().slice(0, 80)
-  const status = STATUS.some((s) => s.value === sp.status) ? sp.status : undefined
-  const project = Number(sp.project) || undefined
+  const { q, status, project, from, to, where: base } = parseLeadFilters(sp)
   const page = Math.max(1, Number(sp.page) || 1)
   const access = { overrideAccess: false, user: req.user, req } as const
 
-  const base: Where[] = []
-  if (q) base.push({ or: [{ name: { like: q } }, { phone: { like: q.replace(/[^\d+]/g, '') || q } }, { email: { like: q } }] })
-  if (status) base.push({ status: { equals: status } })
-  if (project) base.push({ project: { equals: project } })
   const where: Where = { and: [...base, ...(tab !== 'all' ? [{ segment: { equals: tab } }] : [])] }
 
   const [res, counts, projects, selected] = await Promise.all([
@@ -109,13 +104,13 @@ export async function LeadsInbox(props: AdminViewServerProps) {
 
   const qs = (over: Record<string, string | number | undefined>) => {
     const p = new URLSearchParams()
-    const merged = { tab, q, status, project, page: undefined, ...over } as Record<string, unknown>
+    const merged = { tab, q, status, project, from, to, page: undefined, ...over } as Record<string, unknown>
     for (const [k, v] of Object.entries(merged)) if (v !== undefined && v !== '' && !(k === 'tab' && v === 'all')) p.set(k, String(v))
     const s = p.toString()
     return s ? `?${s}` : '?'
   }
   const exportQs = new URLSearchParams(
-    Object.entries({ segment: tab === 'all' ? '' : tab, q, status: status ?? '', project: project ? String(project) : '' }).filter(([, v]) => v),
+    Object.entries({ segment: tab === 'all' ? '' : tab, q, status: status ?? '', project: project ? String(project) : '', from: from ?? '', to: to ?? '' }).filter(([, v]) => v),
   ).toString()
 
   return (
@@ -163,6 +158,14 @@ export async function LeadsInbox(props: AdminViewServerProps) {
                   </option>
                 ))}
               </select>
+            </label>
+            <label className="nr-date">
+              <span>From</span>
+              <input type="date" name="from" defaultValue={from} className="nr-select" />
+            </label>
+            <label className="nr-date">
+              <span>To</span>
+              <input type="date" name="to" defaultValue={to} className="nr-select" />
             </label>
             <button type="submit" className="nr-btn">
               Filter
@@ -225,7 +228,7 @@ export async function LeadsInbox(props: AdminViewServerProps) {
                   {!res.docs.length ? (
                     <tr>
                       <td colSpan={6} className="nr-empty">
-                        No leads match. {q || status || project ? <a href="?">Clear filters</a> : 'New leads appear here as soon as a form is sent.'}
+                        No leads match. {q || status || project || from || to ? <a href="?">Clear filters</a> : 'New leads appear here as soon as a form is sent.'}
                       </td>
                     </tr>
                   ) : null}

@@ -67,6 +67,9 @@ export async function getLeadStats(payload: Payload, req: PayloadRequest, days: 
   }
 
   const count = (fn: (l: Lead) => boolean) => leads.filter(fn).length
+  // "Today" is the Dhaka calendar day (UTC+6, no daylight saving).
+  const DHAKA = 6 * 3_600_000
+  const todayStart = Math.floor((now + DHAKA) / DAY) * DAY - DHAKA
   const newCount = count((l) => l.status === 'new' || !l.status)
   const visits = count((l) => l.type === 'siteVisit' || l.status === 'visitBooked')
   const booked = count((l) => l.status === 'booked')
@@ -77,6 +80,7 @@ export async function getLeadStats(payload: Payload, req: PayloadRequest, days: 
     previousTotal: previous.totalDocs,
     newCount,
     visits,
+    today: count((l) => new Date(l.createdAt).getTime() >= todayStart),
     landowner: count((l) => l.segment === 'landowner'),
     nrb: count((l) => l.segment === 'nrb'),
     booked,
