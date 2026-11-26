@@ -67,8 +67,17 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
+    leads: Lead;
+    'lead-files': LeadFile;
+    pages: Page;
+    projects: Project;
+    areas: Area;
+    amenities: Amenity;
+    testimonials: Testimonial;
+    posts: Post;
+    team: Team;
     media: Media;
+    users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -76,8 +85,17 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
+    leads: LeadsSelect<false> | LeadsSelect<true>;
+    'lead-files': LeadFilesSelect<false> | LeadFilesSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    areas: AreasSelect<false> | AreasSelect<true>;
+    amenities: AmenitiesSelect<false> | AmenitiesSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
+    team: TeamSelect<false> | TeamSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -87,8 +105,30 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'bn') | ('en' | 'bn')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    branding: Branding;
+    header: Header;
+    footer: Footer;
+    contact: Contact;
+    siteSettings: SiteSetting;
+    forms: Form;
+    seo: Seo;
+    tracking: Tracking;
+    announcement: Announcement;
+    popup: Popup;
+  };
+  globalsSelect: {
+    branding: BrandingSelect<false> | BrandingSelect<true>;
+    header: HeaderSelect<false> | HeaderSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    contact: ContactSelect<false> | ContactSelect<true>;
+    siteSettings: SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    forms: FormsSelect<false> | FormsSelect<true>;
+    seo: SeoSelect<false> | SeoSelect<true>;
+    tracking: TrackingSelect<false> | TrackingSelect<true>;
+    announcement: AnnouncementSelect<false> | AnnouncementSelect<true>;
+    popup: PopupSelect<false> | PopupSelect<true>;
+  };
   locale: 'en' | 'bn';
   widgets: {
     collections: CollectionsWidget;
@@ -119,37 +159,267 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "leads".
  */
-export interface User {
+export interface Lead {
   id: number;
+  type: 'enquiry' | 'brochure' | 'siteVisit' | 'landowner' | 'nrb' | 'contact';
+  segment?: ('buyer' | 'landowner' | 'nrb') | null;
   name: string;
+  phone: string;
+  email?: string | null;
+  project?: (number | null) | Project;
+  message?: string | null;
+  details?: {
+    bedrooms?: string | null;
+    visitDate?: string | null;
+    timeSlot?: string | null;
+    area?: string | null;
+    plotAddress?: string | null;
+    landSizeKatha?: number | null;
+    frontRoadFt?: number | null;
+    ownership?: string | null;
+    documents?: (number | LeadFile)[] | null;
+    country?: string | null;
+    whatsapp?: string | null;
+    budgetRange?: string | null;
+    bestTimeToCall?: string | null;
+    subject?: string | null;
+  };
+  tracking?: {
+    pageUrl?: string | null;
+    referrer?: string | null;
+    utmSource?: string | null;
+    utmMedium?: string | null;
+    utmCampaign?: string | null;
+    utmContent?: string | null;
+    utmTerm?: string | null;
+    fbclid?: string | null;
+    gclid?: string | null;
+    fbp?: string | null;
+    fbc?: string | null;
+    language?: string | null;
+    ip?: string | null;
+    eventId?: string | null;
+    userAgent?: string | null;
+  };
   /**
-   * Admin: everything. Editor: content. Sales: leads only.
+   * Whether the email, Google Sheet row and Meta event went out.
    */
-  role: 'admin' | 'editor' | 'sales';
-  phone?: string | null;
-  active?: boolean | null;
-  receivesAutoAssign?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  resetPasswordRequestedAt?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
+  pipeline?: {
+    emailSent?: boolean | null;
+    sheetAppended?: boolean | null;
+    capiSent?: boolean | null;
+    errors?: string | null;
+  };
+  status?: ('new' | 'contacted' | 'visitBooked' | 'booked' | 'lost') | null;
+  assignedTo?: (number | null) | User;
+  /**
+   * Same phone number within 10 minutes.
+   */
+  duplicateOf?: (number | null) | Lead;
+  notes?:
     | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
+        text: string;
+        author?: (number | null) | User;
+        date?: string | null;
+        id?: string | null;
       }[]
     | null;
-  password?: string | null;
-  collection: 'users';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Every project appears on /projects and gets its own page automatically.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  name?: string | null;
+  status: 'ongoing' | 'upcoming' | 'completed' | 'soldOut';
+  type: 'residential' | 'commercial' | 'mixed';
+  area: number | Area;
+  address?: string | null;
+  /**
+   * One line under the name.
+   */
+  tagline?: string | null;
+  overview?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  facts?: {
+    landAreaKatha?: number | null;
+    /**
+     * e.g. G + 14
+     */
+    floors?: string | null;
+    units?: number | null;
+    sizeMinSft?: number | null;
+    sizeMaxSft?: number | null;
+    /**
+     * e.g. 3–4
+     */
+    bedrooms?: string | null;
+    bathrooms?: string | null;
+    frontRoadFt?: number | null;
+    parking?: string | null;
+    handoverDate?: string | null;
+    rajukNo?: string | null;
+  };
+  showPrice?: boolean | null;
+  startingPrice?: number | null;
+  priceNote?: string | null;
+  /**
+   * Drag to reorder. The first photo is the cover.
+   */
+  gallery?: (number | Media)[] | null;
+  videos?:
+    | {
+        /**
+         * YouTube or Facebook video link
+         */
+        url: string;
+        title?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  floorPlans?:
+    | {
+        /**
+         * e.g. Type A
+         */
+        name?: string | null;
+        sizeSft?: number | null;
+        beds?: number | null;
+        baths?: number | null;
+        balconies?: number | null;
+        facing?: string | null;
+        image?: (number | null) | Media;
+        pdf?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * PDF sent after the brochure form.
+   */
+  brochure?: (number | null) | Media;
+  amenities?: (number | Amenity)[] | null;
+  geo?: {
+    lat?: number | null;
+    lng?: number | null;
+    /**
+     * Google Maps → Share → Embed a map → copy the src="…" link.
+     */
+    mapEmbedUrl?: string | null;
+  };
+  nearby?:
+    | {
+        place?: string | null;
+        minutes: number;
+        mode?: ('drive' | 'walk') | null;
+        id?: string | null;
+      }[]
+    | null;
+  progress?: {
+    /**
+     * e.g. Roof casting, 9th floor
+     */
+    stage?: string | null;
+    percent?: number | null;
+    updates?:
+      | {
+          date: string;
+          note?: string | null;
+          photos?: (number | Media)[] | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  faqs?:
+    | {
+        question?: string | null;
+        answer?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Leave empty to use the page title and default description.
+   */
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  /**
+   * Leave empty to build it: apartment-for-sale-in-<area>-<name>.
+   */
+  slug?: string | null;
+  featuredOnHome?: boolean | null;
+  /**
+   * Lower shows first.
+   */
+  order?: number | null;
+  advisor?: (number | null) | Team;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Neighbourhoods. Each one gets a landing page at /apartments-in-<slug>.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "areas".
+ */
+export interface Area {
+  id: number;
+  name?: string | null;
+  /**
+   * Part of the web address. Filled in automatically; edit only if you need to.
+   */
+  slug?: string | null;
+  order?: number | null;
+  heroImage?: (number | null) | Media;
+  intro?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Leave empty to use the page title and default description.
+   */
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -202,6 +472,654 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "amenities".
+ */
+export interface Amenity {
+  id: number;
+  name?: string | null;
+  icon?:
+    | (
+        | 'shield'
+        | 'clock'
+        | 'layers'
+        | 'key'
+        | 'globe'
+        | 'phone'
+        | 'mail'
+        | 'pin'
+        | 'calendar'
+        | 'land'
+        | 'floors'
+        | 'area'
+        | 'bed'
+        | 'road'
+        | 'car'
+        | 'check'
+        | 'grid'
+        | 'play'
+        | 'download'
+        | 'heart'
+        | 'info'
+      )
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team".
+ */
+export interface Team {
+  id: number;
+  name?: string | null;
+  role?: string | null;
+  photo?: (number | null) | Media;
+  phone?: string | null;
+  whatsapp?: string | null;
+  bio?: string | null;
+  isAdvisor?: boolean | null;
+  showOnAbout?: boolean | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lead-files".
+ */
+export interface LeadFile {
+  id: number;
+  originalName?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  name: string;
+  /**
+   * Admin: everything. Editor: content. Sales: leads only.
+   */
+  role: 'admin' | 'editor' | 'sales';
+  phone?: string | null;
+  active?: boolean | null;
+  receivesAutoAssign?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  resetPasswordRequestedAt?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
+}
+/**
+ * Drag sections to reorder, tick "Hide this section" to hide one.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title?: string | null;
+  layout?:
+    | (
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            image?: (number | null) | Media;
+            variant?: ('photo' | 'split' | 'plain') | null;
+            primary?: {
+              label?: string | null;
+              /**
+               * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+               */
+              href?: string | null;
+            };
+            secondary?: {
+              label?: string | null;
+              /**
+               * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+               */
+              href?: string | null;
+            };
+            showSearch?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            source?: ('site' | 'custom') | null;
+            items?:
+              | {
+                  value: string;
+                  label?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stats';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            showTabs?: boolean | null;
+            limit?: number | null;
+            cta?: {
+              label?: string | null;
+              /**
+               * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+               */
+              href?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'featuredProjects';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            image?: (number | null) | Media;
+            items?:
+              | {
+                  icon?:
+                    | (
+                        | 'shield'
+                        | 'clock'
+                        | 'layers'
+                        | 'key'
+                        | 'globe'
+                        | 'phone'
+                        | 'mail'
+                        | 'pin'
+                        | 'calendar'
+                        | 'land'
+                        | 'floors'
+                        | 'area'
+                        | 'bed'
+                        | 'road'
+                        | 'car'
+                        | 'check'
+                        | 'grid'
+                        | 'play'
+                        | 'download'
+                        | 'heart'
+                        | 'info'
+                      )
+                    | null;
+                  title?: string | null;
+                  description?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'features';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            primary?: {
+              label?: string | null;
+              /**
+               * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+               */
+              href?: string | null;
+            };
+            secondary?: {
+              label?: string | null;
+              /**
+               * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+               */
+              href?: string | null;
+            };
+            steps?:
+              | {
+                  title?: string | null;
+                  description?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'landownerBand';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            items?:
+              | {
+                  icon?:
+                    | (
+                        | 'shield'
+                        | 'clock'
+                        | 'layers'
+                        | 'key'
+                        | 'globe'
+                        | 'phone'
+                        | 'mail'
+                        | 'pin'
+                        | 'calendar'
+                        | 'land'
+                        | 'floors'
+                        | 'area'
+                        | 'bed'
+                        | 'road'
+                        | 'car'
+                        | 'check'
+                        | 'grid'
+                        | 'play'
+                        | 'download'
+                        | 'heart'
+                        | 'info'
+                      )
+                    | null;
+                  title?: string | null;
+                  description?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'steps';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            filter?: ('all' | 'buyer' | 'landowner' | 'nrb') | null;
+            limit?: number | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            image?: (number | null) | Media;
+            cta?: {
+              label?: string | null;
+              /**
+               * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+               */
+              href?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'nrbBanner';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            limit?: number | null;
+            cta?: {
+              label?: string | null;
+              /**
+               * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+               */
+              href?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'blogLatest';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            form?: ('enquiry' | 'siteVisit' | 'landowner' | 'nrb' | 'contact') | null;
+            formTitle?: string | null;
+            showContacts?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'enquiryForm';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            width?: ('narrow' | 'wide') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            body?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            image?: (number | null) | Media;
+            imagePosition?: ('left' | 'right') | null;
+            cta?: {
+              label?: string | null;
+              /**
+               * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+               */
+              href?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'imageText';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            items?:
+              | {
+                  question?: string | null;
+                  answer?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            primary?: {
+              label?: string | null;
+              /**
+               * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+               */
+              href?: string | null;
+            };
+            secondary?: {
+              label?: string | null;
+              /**
+               * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+               */
+              href?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'ctaBand';
+          }
+        | {
+            hidden?: boolean | null;
+            background?: ('cream' | 'sand' | 'ink' | 'forest') | null;
+            /**
+             * Optional, lets links jump here (e.g. land-form).
+             */
+            anchorId?: string | null;
+            eyebrow?: string | null;
+            /**
+             * Wrap the gold italic phrase in *asterisks*, e.g. Homes crafted with patience, *built on trust.*
+             */
+            title?: string | null;
+            description?: string | null;
+            images?: (number | Media)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+      )[]
+    | null;
+  /**
+   * Leave empty to use the page title and default description.
+   */
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  /**
+   * Part of the web address. Filled in automatically; edit only if you need to.
+   */
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  name?: string | null;
+  /**
+   * e.g. Apartment owner · NR Aurelia
+   */
+  role?: string | null;
+  type: 'buyer' | 'landowner' | 'nrb';
+  quote?: string | null;
+  project?: (number | null) | Project;
+  photo?: (number | null) | Media;
+  videoUrl?: string | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  title?: string | null;
+  excerpt?: string | null;
+  cover?: (number | null) | Media;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  relatedProjects?: (number | Project)[] | null;
+  /**
+   * Leave empty to use the page title and default description.
+   */
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  /**
+   * Part of the web address. Filled in automatically; edit only if you need to.
+   */
+  slug?: string | null;
+  publishedAt?: string | null;
+  category?: ('buying' | 'landowner' | 'nrb' | 'news') | null;
+  author?: (number | null) | Team;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -225,12 +1143,48 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
+        relationTo: 'leads';
+        value: number | Lead;
+      } | null)
+    | ({
+        relationTo: 'lead-files';
+        value: number | LeadFile;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'areas';
+        value: number | Area;
+      } | null)
+    | ({
+        relationTo: 'amenities';
+        value: number | Amenity;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: number | Testimonial;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
+      } | null)
+    | ({
+        relationTo: 'team';
+        value: number | Team;
       } | null)
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -276,31 +1230,602 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
+ * via the `definition` "leads_select".
  */
-export interface UsersSelect<T extends boolean = true> {
+export interface LeadsSelect<T extends boolean = true> {
+  type?: T;
+  segment?: T;
   name?: T;
-  role?: T;
   phone?: T;
-  active?: T;
-  receivesAutoAssign?: T;
-  updatedAt?: T;
-  createdAt?: T;
   email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  resetPasswordRequestedAt?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
+  project?: T;
+  message?: T;
+  details?:
     | T
     | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
+        bedrooms?: T;
+        visitDate?: T;
+        timeSlot?: T;
+        area?: T;
+        plotAddress?: T;
+        landSizeKatha?: T;
+        frontRoadFt?: T;
+        ownership?: T;
+        documents?: T;
+        country?: T;
+        whatsapp?: T;
+        budgetRange?: T;
+        bestTimeToCall?: T;
+        subject?: T;
       };
+  tracking?:
+    | T
+    | {
+        pageUrl?: T;
+        referrer?: T;
+        utmSource?: T;
+        utmMedium?: T;
+        utmCampaign?: T;
+        utmContent?: T;
+        utmTerm?: T;
+        fbclid?: T;
+        gclid?: T;
+        fbp?: T;
+        fbc?: T;
+        language?: T;
+        ip?: T;
+        eventId?: T;
+        userAgent?: T;
+      };
+  pipeline?:
+    | T
+    | {
+        emailSent?: T;
+        sheetAppended?: T;
+        capiSent?: T;
+        errors?: T;
+      };
+  status?: T;
+  assignedTo?: T;
+  duplicateOf?: T;
+  notes?:
+    | T
+    | {
+        text?: T;
+        author?: T;
+        date?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lead-files_select".
+ */
+export interface LeadFilesSelect<T extends boolean = true> {
+  originalName?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  layout?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              image?: T;
+              variant?: T;
+              primary?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                  };
+              secondary?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                  };
+              showSearch?: T;
+              id?: T;
+              blockName?: T;
+            };
+        stats?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              source?: T;
+              items?:
+                | T
+                | {
+                    value?: T;
+                    label?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        featuredProjects?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              showTabs?: T;
+              limit?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        features?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              image?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        landownerBand?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              primary?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                  };
+              secondary?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                  };
+              steps?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        steps?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              filter?: T;
+              limit?: T;
+              id?: T;
+              blockName?: T;
+            };
+        nrbBanner?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              image?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        blogLatest?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              limit?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        enquiryForm?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              form?: T;
+              formTitle?: T;
+              showContacts?: T;
+              id?: T;
+              blockName?: T;
+            };
+        richText?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              content?: T;
+              width?: T;
+              id?: T;
+              blockName?: T;
+            };
+        imageText?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              body?: T;
+              image?: T;
+              imagePosition?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        ctaBand?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              primary?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                  };
+              secondary?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        gallery?:
+          | T
+          | {
+              hidden?: T;
+              background?: T;
+              anchorId?: T;
+              eyebrow?: T;
+              title?: T;
+              description?: T;
+              images?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noIndex?: T;
+      };
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  name?: T;
+  status?: T;
+  type?: T;
+  area?: T;
+  address?: T;
+  tagline?: T;
+  overview?: T;
+  facts?:
+    | T
+    | {
+        landAreaKatha?: T;
+        floors?: T;
+        units?: T;
+        sizeMinSft?: T;
+        sizeMaxSft?: T;
+        bedrooms?: T;
+        bathrooms?: T;
+        frontRoadFt?: T;
+        parking?: T;
+        handoverDate?: T;
+        rajukNo?: T;
+      };
+  showPrice?: T;
+  startingPrice?: T;
+  priceNote?: T;
+  gallery?: T;
+  videos?:
+    | T
+    | {
+        url?: T;
+        title?: T;
+        id?: T;
+      };
+  floorPlans?:
+    | T
+    | {
+        name?: T;
+        sizeSft?: T;
+        beds?: T;
+        baths?: T;
+        balconies?: T;
+        facing?: T;
+        image?: T;
+        pdf?: T;
+        id?: T;
+      };
+  brochure?: T;
+  amenities?: T;
+  geo?:
+    | T
+    | {
+        lat?: T;
+        lng?: T;
+        mapEmbedUrl?: T;
+      };
+  nearby?:
+    | T
+    | {
+        place?: T;
+        minutes?: T;
+        mode?: T;
+        id?: T;
+      };
+  progress?:
+    | T
+    | {
+        stage?: T;
+        percent?: T;
+        updates?:
+          | T
+          | {
+              date?: T;
+              note?: T;
+              photos?: T;
+              id?: T;
+            };
+      };
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noIndex?: T;
+      };
+  slug?: T;
+  featuredOnHome?: T;
+  order?: T;
+  advisor?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "areas_select".
+ */
+export interface AreasSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  order?: T;
+  heroImage?: T;
+  intro?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "amenities_select".
+ */
+export interface AmenitiesSelect<T extends boolean = true> {
+  name?: T;
+  icon?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  type?: T;
+  quote?: T;
+  project?: T;
+  photo?: T;
+  videoUrl?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  excerpt?: T;
+  cover?: T;
+  body?: T;
+  relatedProjects?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noIndex?: T;
+      };
+  slug?: T;
+  publishedAt?: T;
+  category?: T;
+  author?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team_select".
+ */
+export interface TeamSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  photo?: T;
+  phone?: T;
+  whatsapp?: T;
+  bio?: T;
+  isAdvisor?: T;
+  showOnAbout?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -357,6 +1882,34 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  phone?: T;
+  active?: T;
+  receivesAutoAssign?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  resetPasswordRequestedAt?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -394,6 +1947,920 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "branding".
+ */
+export interface Branding {
+  id: number;
+  companyName?: string | null;
+  tagline?: string | null;
+  /**
+   * Small line under the placeholder wordmark (e.g. DEVELOPMENTS LTD.).
+   */
+  logoSubline?: string | null;
+  /**
+   * Leave empty to use the NR placeholder wordmark.
+   */
+  logoLight?: (number | null) | Media;
+  logoDark?: (number | null) | Media;
+  /**
+   * Square PNG, 512×512.
+   */
+  favicon?: (number | null) | Media;
+  /**
+   * 1200×630.
+   */
+  ogImage?: (number | null) | Media;
+  colors?: {
+    /**
+     * Default #0E1B17
+     */
+    ink?: string | null;
+    /**
+     * Default #1F3A32
+     */
+    forest?: string | null;
+    /**
+     * Default #2C4A40
+     */
+    forest2?: string | null;
+    /**
+     * Default #B08D57
+     */
+    gold?: string | null;
+    /**
+     * Default #7F6034
+     */
+    goldText?: string | null;
+    /**
+     * Default #E9DCC5
+     */
+    goldSoft?: string | null;
+    /**
+     * Default #D9BC8A
+     */
+    goldLight?: string | null;
+    /**
+     * Default #F6F2EA
+     */
+    cream?: string | null;
+    /**
+     * Default #EDE6DA
+     */
+    sand?: string | null;
+    /**
+     * Default #16211D
+     */
+    text?: string | null;
+    /**
+     * Default #5A6762
+     */
+    muted?: string | null;
+    /**
+     * Default #DDD5C7
+     */
+    line?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header".
+ */
+export interface Header {
+  id: number;
+  /**
+   * Drag to reorder.
+   */
+  menu?:
+    | {
+        label?: string | null;
+        /**
+         * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+         */
+        href: string;
+        show?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  cta?: {
+    label?: string | null;
+    /**
+     * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+     */
+    href?: string | null;
+    opensSiteVisit?: boolean | null;
+  };
+  showHotline?: boolean | null;
+  showLanguageSwitch?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  about?: string | null;
+  columns?:
+    | {
+        title?: string | null;
+        links?:
+          | {
+              label?: string | null;
+              /**
+               * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+               */
+              href: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * {year} is replaced with the current year.
+   */
+  copyright?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact".
+ */
+export interface Contact {
+  id: number;
+  /**
+   * e.g. 01816-917164
+   */
+  hotline: string;
+  whatsapp: string;
+  whatsappMessage?: string | null;
+  showWhatsappButton?: boolean | null;
+  emails?:
+    | {
+        label?: string | null;
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  address?: string | null;
+  mapEmbedUrl?: string | null;
+  officeHours?: string | null;
+  socials?: {
+    facebook?: string | null;
+    instagram?: string | null;
+    youtube?: string | null;
+    linkedin?: string | null;
+    tiktok?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteSettings".
+ */
+export interface SiteSetting {
+  id: number;
+  stats?:
+    | {
+        value: string;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  rehabNo?: string | null;
+  tradeLicence?: string | null;
+  leadRouting?: {
+    recipients?:
+      | {
+          email: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * The long ID in the sheet URL. Share the sheet with the service-account email.
+     */
+    googleSheetId?: string | null;
+    googleSheetTab?: string | null;
+    autoAssign?: boolean | null;
+    lastAssignedUser?: (number | null) | User;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms".
+ */
+export interface Form {
+  id: number;
+  enquiry?: {
+    title?: string | null;
+    submitLabel?: string | null;
+    successMessage?: string | null;
+    /**
+     * Leave empty to use the default recipients in Site settings.
+     */
+    recipients?:
+      | {
+          email: string;
+          id?: string | null;
+        }[]
+      | null;
+    hiddenFields?: ('bedrooms' | 'message')[] | null;
+    /**
+     * Override a field label or placeholder (field names: name, phone, project…).
+     */
+    labels?:
+      | {
+          field: string;
+          label?: string | null;
+          placeholder?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  brochure?: {
+    title?: string | null;
+    submitLabel?: string | null;
+    successMessage?: string | null;
+    /**
+     * Leave empty to use the default recipients in Site settings.
+     */
+    recipients?:
+      | {
+          email: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Override a field label or placeholder (field names: name, phone, project…).
+     */
+    labels?:
+      | {
+          field: string;
+          label?: string | null;
+          placeholder?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  siteVisit?: {
+    title?: string | null;
+    submitLabel?: string | null;
+    successMessage?: string | null;
+    /**
+     * Leave empty to use the default recipients in Site settings.
+     */
+    recipients?:
+      | {
+          email: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Override a field label or placeholder (field names: name, phone, project…).
+     */
+    labels?:
+      | {
+          field: string;
+          label?: string | null;
+          placeholder?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  landowner?: {
+    title?: string | null;
+    submitLabel?: string | null;
+    successMessage?: string | null;
+    /**
+     * Leave empty to use the default recipients in Site settings.
+     */
+    recipients?:
+      | {
+          email: string;
+          id?: string | null;
+        }[]
+      | null;
+    hiddenFields?: ('email' | 'plotAddress' | 'frontRoadFt' | 'documents' | 'message')[] | null;
+    /**
+     * Override a field label or placeholder (field names: name, phone, project…).
+     */
+    labels?:
+      | {
+          field: string;
+          label?: string | null;
+          placeholder?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  nrb?: {
+    title?: string | null;
+    submitLabel?: string | null;
+    successMessage?: string | null;
+    /**
+     * Leave empty to use the default recipients in Site settings.
+     */
+    recipients?:
+      | {
+          email: string;
+          id?: string | null;
+        }[]
+      | null;
+    hiddenFields?: ('project' | 'budgetRange' | 'bestTimeToCall' | 'message')[] | null;
+    /**
+     * Override a field label or placeholder (field names: name, phone, project…).
+     */
+    labels?:
+      | {
+          field: string;
+          label?: string | null;
+          placeholder?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  contact?: {
+    title?: string | null;
+    submitLabel?: string | null;
+    successMessage?: string | null;
+    /**
+     * Leave empty to use the default recipients in Site settings.
+     */
+    recipients?:
+      | {
+          email: string;
+          id?: string | null;
+        }[]
+      | null;
+    hiddenFields?: 'email'[] | null;
+    /**
+     * Override a field label or placeholder (field names: name, phone, project…).
+     */
+    labels?:
+      | {
+          field: string;
+          label?: string | null;
+          placeholder?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  bedrooms?:
+    | {
+        value: string;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  timeSlots?:
+    | {
+        value: string;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  budgetRanges?:
+    | {
+        value: string;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  bestTimes?:
+    | {
+        value: string;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  subjects?:
+    | {
+        value: string;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo".
+ */
+export interface Seo {
+  id: number;
+  /**
+   * %s is replaced with the page title.
+   */
+  titleTemplate?: string | null;
+  defaultTitle?: string | null;
+  defaultDescription?: string | null;
+  ogImage?: (number | null) | Media;
+  /**
+   * Send visitors from an old address to a new one (e.g. after renaming a project).
+   */
+  redirects?:
+    | {
+        from: string;
+        to: string;
+        permanent?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Paste IDs here; no code changes needed.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tracking".
+ */
+export interface Tracking {
+  id: number;
+  gtmId?: string | null;
+  ga4Id?: string | null;
+  clarityId?: string | null;
+  meta?: {
+    pixelId?: string | null;
+    /**
+     * From Events Manager → Test events. Remove after testing.
+     */
+    testEventCode?: string | null;
+    /**
+     * Or set META_CAPI_ACCESS_TOKEN on the server, which wins if both are set.
+     */
+    capiToken?: string | null;
+  };
+  googleAds?: {
+    conversionId?: string | null;
+    labels?: {
+      lead?: string | null;
+      schedule?: string | null;
+      landowner?: string | null;
+      contact?: string | null;
+    };
+  };
+  consentRequired?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "announcement".
+ */
+export interface Announcement {
+  id: number;
+  enabled?: boolean | null;
+  text?: string | null;
+  label?: string | null;
+  /**
+   * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+   */
+  href?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "popup".
+ */
+export interface Popup {
+  id: number;
+  enabled?: boolean | null;
+  title?: string | null;
+  body?: string | null;
+  image?: (number | null) | Media;
+  trigger?: ('delay' | 'exit') | null;
+  delaySeconds?: number | null;
+  showForm?: boolean | null;
+  label?: string | null;
+  /**
+   * e.g. /projects, /landowner#land-form, https://…, tel:+880…
+   */
+  href?: string | null;
+  /**
+   * Paths such as /thank-you or /contact.
+   */
+  excludePaths?: string[] | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "branding_select".
+ */
+export interface BrandingSelect<T extends boolean = true> {
+  companyName?: T;
+  tagline?: T;
+  logoSubline?: T;
+  logoLight?: T;
+  logoDark?: T;
+  favicon?: T;
+  ogImage?: T;
+  colors?:
+    | T
+    | {
+        ink?: T;
+        forest?: T;
+        forest2?: T;
+        gold?: T;
+        goldText?: T;
+        goldSoft?: T;
+        goldLight?: T;
+        cream?: T;
+        sand?: T;
+        text?: T;
+        muted?: T;
+        line?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header_select".
+ */
+export interface HeaderSelect<T extends boolean = true> {
+  menu?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        show?: T;
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        opensSiteVisit?: T;
+      };
+  showHotline?: T;
+  showLanguageSwitch?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  about?: T;
+  columns?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  copyright?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact_select".
+ */
+export interface ContactSelect<T extends boolean = true> {
+  hotline?: T;
+  whatsapp?: T;
+  whatsappMessage?: T;
+  showWhatsappButton?: T;
+  emails?:
+    | T
+    | {
+        label?: T;
+        email?: T;
+        id?: T;
+      };
+  address?: T;
+  mapEmbedUrl?: T;
+  officeHours?: T;
+  socials?:
+    | T
+    | {
+        facebook?: T;
+        instagram?: T;
+        youtube?: T;
+        linkedin?: T;
+        tiktok?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteSettings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  stats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  rehabNo?: T;
+  tradeLicence?: T;
+  leadRouting?:
+    | T
+    | {
+        recipients?:
+          | T
+          | {
+              email?: T;
+              id?: T;
+            };
+        googleSheetId?: T;
+        googleSheetTab?: T;
+        autoAssign?: T;
+        lastAssignedUser?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms_select".
+ */
+export interface FormsSelect<T extends boolean = true> {
+  enquiry?:
+    | T
+    | {
+        title?: T;
+        submitLabel?: T;
+        successMessage?: T;
+        recipients?:
+          | T
+          | {
+              email?: T;
+              id?: T;
+            };
+        hiddenFields?: T;
+        labels?:
+          | T
+          | {
+              field?: T;
+              label?: T;
+              placeholder?: T;
+              id?: T;
+            };
+      };
+  brochure?:
+    | T
+    | {
+        title?: T;
+        submitLabel?: T;
+        successMessage?: T;
+        recipients?:
+          | T
+          | {
+              email?: T;
+              id?: T;
+            };
+        labels?:
+          | T
+          | {
+              field?: T;
+              label?: T;
+              placeholder?: T;
+              id?: T;
+            };
+      };
+  siteVisit?:
+    | T
+    | {
+        title?: T;
+        submitLabel?: T;
+        successMessage?: T;
+        recipients?:
+          | T
+          | {
+              email?: T;
+              id?: T;
+            };
+        labels?:
+          | T
+          | {
+              field?: T;
+              label?: T;
+              placeholder?: T;
+              id?: T;
+            };
+      };
+  landowner?:
+    | T
+    | {
+        title?: T;
+        submitLabel?: T;
+        successMessage?: T;
+        recipients?:
+          | T
+          | {
+              email?: T;
+              id?: T;
+            };
+        hiddenFields?: T;
+        labels?:
+          | T
+          | {
+              field?: T;
+              label?: T;
+              placeholder?: T;
+              id?: T;
+            };
+      };
+  nrb?:
+    | T
+    | {
+        title?: T;
+        submitLabel?: T;
+        successMessage?: T;
+        recipients?:
+          | T
+          | {
+              email?: T;
+              id?: T;
+            };
+        hiddenFields?: T;
+        labels?:
+          | T
+          | {
+              field?: T;
+              label?: T;
+              placeholder?: T;
+              id?: T;
+            };
+      };
+  contact?:
+    | T
+    | {
+        title?: T;
+        submitLabel?: T;
+        successMessage?: T;
+        recipients?:
+          | T
+          | {
+              email?: T;
+              id?: T;
+            };
+        hiddenFields?: T;
+        labels?:
+          | T
+          | {
+              field?: T;
+              label?: T;
+              placeholder?: T;
+              id?: T;
+            };
+      };
+  bedrooms?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  timeSlots?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  budgetRanges?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  bestTimes?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  subjects?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo_select".
+ */
+export interface SeoSelect<T extends boolean = true> {
+  titleTemplate?: T;
+  defaultTitle?: T;
+  defaultDescription?: T;
+  ogImage?: T;
+  redirects?:
+    | T
+    | {
+        from?: T;
+        to?: T;
+        permanent?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tracking_select".
+ */
+export interface TrackingSelect<T extends boolean = true> {
+  gtmId?: T;
+  ga4Id?: T;
+  clarityId?: T;
+  meta?:
+    | T
+    | {
+        pixelId?: T;
+        testEventCode?: T;
+        capiToken?: T;
+      };
+  googleAds?:
+    | T
+    | {
+        conversionId?: T;
+        labels?:
+          | T
+          | {
+              lead?: T;
+              schedule?: T;
+              landowner?: T;
+              contact?: T;
+            };
+      };
+  consentRequired?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "announcement_select".
+ */
+export interface AnnouncementSelect<T extends boolean = true> {
+  enabled?: T;
+  text?: T;
+  label?: T;
+  href?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "popup_select".
+ */
+export interface PopupSelect<T extends boolean = true> {
+  enabled?: T;
+  title?: T;
+  body?: T;
+  image?: T;
+  trigger?: T;
+  delaySeconds?: T;
+  showForm?: T;
+  label?: T;
+  href?: T;
+  excludePaths?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
