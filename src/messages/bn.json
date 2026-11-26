@@ -1,0 +1,59 @@
+{
+  "common": {
+    "call": "কল",
+    "callNow": "এখনই কল করুন",
+    "whatsapp": "হোয়াটসঅ্যাপ",
+    "enquire": "জানতে চাই",
+    "bookVisit": "ভিজিট বুক করুন",
+    "viewAllProjects": "সব প্রজেক্ট দেখুন",
+    "viewDetails": "বিস্তারিত দেখুন",
+    "startingFrom": "শুরু",
+    "priceOnRequest": "মূল্য জানতে যোগাযোগ করুন",
+    "required": "আবশ্যক",
+    "close": "বন্ধ করুন",
+    "openMenu": "মেনু খুলুন",
+    "closeMenu": "মেনু বন্ধ করুন",
+    "home": "হোম",
+    "breadcrumb": "ব্রেডক্রাম্ব",
+    "quickActions": "দ্রুত যোগাযোগ",
+    "chatOnWhatsapp": "হোয়াটসঅ্যাপে কথা বলুন",
+    "languageSwitch": "English",
+    "languageSwitchLabel": "View this page in English"
+  },
+  "status": {
+    "ongoing": "চলমান",
+    "upcoming": "আসন্ন",
+    "completed": "সম্পন্ন",
+    "soldOut": "বিক্রি শেষ"
+  },
+  "units": {
+    "sft": "বর্গফুট",
+    "beds": "{count} বেড",
+    "katha": "কাঠা"
+  },
+  "form": {
+    "fullName": "পূর্ণ নাম",
+    "fullNamePlaceholder": "যেমন: রহিম উদ্দিন",
+    "phone": "মোবাইল নম্বর",
+    "phonePlaceholder": "01XXX-XXXXXX",
+    "project": "আগ্রহী প্রজেক্ট",
+    "selectProject": "একটি প্রজেক্ট বেছে নিন",
+    "message": "বার্তা",
+    "messagePlaceholder": "আমাদের যা জানাতে চান",
+    "consent": "জমা দিয়ে আপনি ফোন বা হোয়াটসঅ্যাপে যোগাযোগে সম্মতি দিচ্ছেন। আমাদের <link>গোপনীয়তা নীতি</link> দেখুন।",
+    "submitting": "পাঠানো হচ্ছে…"
+  },
+  "toast": {
+    "dismiss": "নোটিফিকেশন বন্ধ করুন"
+  },
+  "notFound": {
+    "eyebrow": "পাতাটি পাওয়া যায়নি",
+    "title": "এই ঠিকানাটি আমাদের মানচিত্রে নেই।",
+    "body": "পাতাটি সরানো হয়ে থাকতে পারে। আমাদের প্রজেক্টগুলো ঠিক আগের জায়গাতেই আছে।",
+    "cta": "প্রজেক্টগুলো দেখুন"
+  },
+  "metadata": {
+    "title": "এন.আর প্রোপ্রাটি · ঢাকার প্রিমিয়াম আবাসন",
+    "description": "ঢাকার সবচেয়ে কাঙ্ক্ষিত এলাকায় যত্নে নকশা করা অ্যাপার্টমেন্ট।"
+  }
+}

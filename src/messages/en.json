@@ -1,0 +1,59 @@
+{
+  "common": {
+    "call": "Call",
+    "callNow": "Call now",
+    "whatsapp": "WhatsApp",
+    "enquire": "Enquire",
+    "bookVisit": "Book a Visit",
+    "viewAllProjects": "View all projects",
+    "viewDetails": "View details",
+    "startingFrom": "Starting from",
+    "priceOnRequest": "Price on request",
+    "required": "required",
+    "close": "Close",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "home": "Home",
+    "breadcrumb": "Breadcrumb",
+    "quickActions": "Quick actions",
+    "chatOnWhatsapp": "Chat with us on WhatsApp",
+    "languageSwitch": "বাংলা",
+    "languageSwitchLabel": "পাতাটি বাংলায় দেখুন"
+  },
+  "status": {
+    "ongoing": "Ongoing",
+    "upcoming": "Upcoming",
+    "completed": "Completed",
+    "soldOut": "Sold Out"
+  },
+  "units": {
+    "sft": "sft",
+    "beds": "{count, plural, one {# Bed} other {# Beds}}",
+    "katha": "Katha"
+  },
+  "form": {
+    "fullName": "Full name",
+    "fullNamePlaceholder": "e.g. Rahim Uddin",
+    "phone": "Phone number",
+    "phonePlaceholder": "01XXX-XXXXXX",
+    "project": "Interested project",
+    "selectProject": "Select a project",
+    "message": "Message",
+    "messagePlaceholder": "Anything you would like us to know",
+    "consent": "By submitting, you agree to be contacted by phone or WhatsApp. See our <link>Privacy Policy</link>.",
+    "submitting": "Sending…"
+  },
+  "toast": {
+    "dismiss": "Dismiss notification"
+  },
+  "notFound": {
+    "eyebrow": "Page not found",
+    "title": "This address isn’t on our map.",
+    "body": "The page may have moved. Our projects are still exactly where we left them.",
+    "cta": "Explore projects"
+  },
+  "metadata": {
+    "title": "NR Property · Premium residences in Dhaka",
+    "description": "Thoughtfully designed apartments in Dhaka’s most sought-after neighbourhoods."
+  }
+}

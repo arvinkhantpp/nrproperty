@@ -1,0 +1,302 @@
+@import 'tailwindcss';
+
+/*
+ * NR Property design tokens.
+ * Raw values live in --nr-* variables so the Branding global in the admin can override them at
+ * runtime (it injects a :root block after this file). Tailwind utilities read them via @theme inline.
+ */
+:root {
+  --nr-ink: #0e1b17;
+  --nr-forest: #1f3a32;
+  --nr-forest-2: #2c4a40;
+  --nr-gold: #b08d57;
+  --nr-gold-text: #7f6034; /* brief: #8A6A3A, darkened to pass AA on cream and sand */
+  --nr-gold-soft: #e9dcc5;
+  --nr-cream: #f6f2ea;
+  --nr-sand: #ede6da;
+  --nr-text: #16211d;
+  --nr-muted: #5a6762; /* brief: #5E6B66, darkened to pass AA on sand */
+  --nr-line: #ddd5c7;
+  --nr-success: #2e7d5b;
+  --nr-warning: #c98a1b;
+  --nr-danger: #b4483c;
+  --nr-info: #3b6ea8;
+  --nr-admin-bg: #f4f5f3;
+  --nr-gold-light: #d9bc8a; /* gold for small text on forest / photos */
+  --nr-whatsapp: #1f7a4d;
+}
+
+@theme inline {
+  --color-*: initial;
+  --color-ink: var(--nr-ink);
+  --color-forest: var(--nr-forest);
+  --color-forest-2: var(--nr-forest-2);
+  --color-gold: var(--nr-gold);
+  --color-gold-text: var(--nr-gold-text);
+  --color-gold-soft: var(--nr-gold-soft);
+  --color-cream: var(--nr-cream);
+  --color-sand: var(--nr-sand);
+  --color-text: var(--nr-text);
+  --color-muted: var(--nr-muted);
+  --color-line: var(--nr-line);
+  --color-success: var(--nr-success);
+  --color-warning: var(--nr-warning);
+  --color-danger: var(--nr-danger);
+  --color-info: var(--nr-info);
+  --color-admin-bg: var(--nr-admin-bg);
+  --color-gold-light: var(--nr-gold-light);
+  --color-whatsapp: var(--nr-whatsapp);
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --font-display: var(--font-cormorant), var(--font-hind), Georgia, serif;
+  --font-sans: var(--font-manrope), var(--font-hind), system-ui, sans-serif;
+  --font-bangla: var(--font-hind), var(--font-manrope), system-ui, sans-serif;
+}
+
+@theme {
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+
+  --container-site: 1200px;
+
+  --shadow-float: 0 16px 40px rgb(14 27 23 / 0.18);
+  --shadow-card: 0 1px 2px rgb(14 27 23 / 0.04), 0 8px 24px rgb(14 27 23 / 0.06);
+  --shadow-bar: 0 -12px 32px rgb(14 27 23 / 0.08);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-skeleton: skeleton 1.6s ease-in-out infinite;
+  --animate-fade-in: fade-in 300ms var(--ease-out-soft);
+  --animate-toast-in: toast-in 320ms var(--ease-out-soft);
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes skeleton {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.55;
+    }
+  }
+}
+
+/* ---------- Type scale (desktop values from the brief; mobile scaled from the mobile designs) ---------- */
+
+@utility text-display-xl {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(3rem, 1.6rem + 5.6vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: clamp(-2px, -0.08vw, -1px);
+}
+@utility text-display-l {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.5rem, 1.75rem + 3vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -1px;
+}
+@utility text-display-m {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.125rem, 1.75rem + 1.4vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+@utility text-display-s {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.625rem, 1.45rem + 0.7vw, 2rem);
+  line-height: 1.15;
+}
+@utility text-eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+@utility text-body-l {
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+@utility text-body {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+@utility text-small {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+@utility text-label {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+/* Layout */
+@utility container-site {
+  width: 100%;
+  max-width: calc(var(--container-site) + 2 * 1.25rem);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media (width >= 48rem) {
+    max-width: calc(var(--container-site) + 2 * 2rem);
+    padding-inline: 2rem;
+  }
+}
+@utility section-y {
+  padding-block: 3.5rem;
+  @media (width >= 64rem) {
+    padding-block: 7rem;
+  }
+}
+
+/* ---------- Base ---------- */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+  body {
+    background: var(--color-cream);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  /* Bangla: Hind Siliguri for UI text; looser leading because Bengali glyphs are taller. */
+  html[lang='bn'] body {
+    font-family: var(--font-bangla);
+  }
+  html[lang='bn'] :is(.text-display-xl, .text-display-l, .text-display-m, .text-display-s) {
+    line-height: 1.28;
+    letter-spacing: 0;
+  }
+  html[lang='bn'] .text-eyebrow {
+    letter-spacing: 0.5px;
+  }
+
+  ::selection {
+    background: var(--color-gold-soft);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  button,
+  [role='button'] {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  /* Numbers set in the serif align better as lining figures. */
+  .font-display {
+    font-variant-numeric: lining-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Dialog (Modal / Drawer) ---------- */
+
+.nr-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  display: none;
+}
+.nr-dialog[open] {
+  display: flex;
+}
+.nr-dialog--modal[open] {
+  align-items: center;
+  justify-content: center;
+}
+.nr-dialog--drawer[open] {
+  align-items: flex-end;
+  justify-content: center;
+}
+@media (width >= 40rem) {
+  .nr-dialog--drawer[open] {
+    align-items: stretch;
+    justify-content: flex-end;
+  }
+}
+.nr-dialog::backdrop {
+  transition: opacity 250ms ease;
+  opacity: 1;
+}
+.nr-dialog__panel {
+  transition:
+    transform 320ms var(--ease-out-soft),
+    opacity 250ms ease;
+}
+@starting-style {
+  .nr-dialog[open]::backdrop {
+    opacity: 0;
+  }
+  .nr-dialog--modal[open] .nr-dialog__panel {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  .nr-dialog--drawer[open] .nr-dialog__panel {
+    transform: translateY(100%);
+  }
+}
+@media (width >= 40rem) {
+  @starting-style {
+    .nr-dialog--drawer[open] .nr-dialog__panel {
+      transform: translateX(100%);
+    }
+  }
+}
