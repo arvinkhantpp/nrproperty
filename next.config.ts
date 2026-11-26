@@ -13,6 +13,9 @@ const remoteHosts = (process.env.NEXT_PUBLIC_IMAGE_HOSTS ?? '')
 const nextConfig: NextConfig = {
   output: 'standalone',
   poweredByHeader: false,
+  // Always put <title>, description and Open Graph tags in <head>. Streaming them into the body
+  // breaks link previews on Facebook/WhatsApp and some crawlers that don't run JavaScript.
+  htmlLimitedBots: /.*/,
   // Landowner documents (up to 10 MB each) are posted to a server action when R2 is not configured.
   experimental: { serverActions: { bodySizeLimit: '11mb' } },
   images: {
@@ -30,4 +33,14 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withPayload(withNextIntl(nextConfig), { devBundleServerPackages: false })
+const config = withPayload(withNextIntl(nextConfig), { devBundleServerPackages: false })
+
+// Payload asks every route for the colour-scheme client hint with `Critical-CH`, which makes Chrome
+// repeat the first request (~0.6 s on mobile). Only the admin needs it, so scope those headers there.
+const payloadHeaders = config.headers
+config.headers = async () =>
+  ((await payloadHeaders?.()) ?? []).map((rule) =>
+    rule.headers.some((h) => h.key === 'Critical-CH') ? { ...rule, source: '/admin/:path*' } : rule,
+  )
+
+export default config

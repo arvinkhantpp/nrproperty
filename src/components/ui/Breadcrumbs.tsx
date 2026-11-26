@@ -1,6 +1,9 @@
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
-import { Link } from '@/i18n/navigation'
+import { JsonLd } from '@/components/site/JsonLd'
+
+import { getPathname, Link } from '@/i18n/navigation'
+import type { Locale } from '@/i18n/routing'
 import { cn } from '@/lib/cn'
 
 import { isDarkTone, type Tone } from './SectionHeader'
@@ -18,8 +21,21 @@ export function Breadcrumbs({
 }) {
   const t = useTranslations('common')
   const dark = isDarkTone(tone)
+  const locale = useLocale() as Locale
+  const site = (process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, '')
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.label,
+      ...(item.href && !item.href.startsWith('#') ? { item: `${site}${getPathname({ href: item.href, locale })}` } : {}),
+    })),
+  }
   return (
     <nav aria-label={t('breadcrumb')} className={className}>
+      <JsonLd data={ld} />
       <ol className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-small font-medium">
         {items.map((item, i) => {
           const last = i === items.length - 1

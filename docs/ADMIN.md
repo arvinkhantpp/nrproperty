@@ -23,7 +23,7 @@ The classic Payload list is still under Leads → Leads for bulk edits and colum
 
 ## Demo data
 `pnpm seed:demo-leads` adds 64 fake leads (phones +880100…) for trying the dashboard locally.
-`pnpm seed:demo-leads --clear` removes them. Do not run it against production.
+`DEMO_CLEAR=1 pnpm seed:demo-leads` removes them. Do not run it against production.
 
 ## Logo
 The admin uses the Branding global: "Logo for light backgrounds" on the sign-in page and the favicon as

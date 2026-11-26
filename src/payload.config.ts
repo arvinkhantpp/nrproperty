@@ -20,6 +20,7 @@ import { Team } from './collections/Team'
 import { Testimonials } from './collections/Testimonials'
 import { Users } from './collections/Users'
 import { globals } from './globals'
+import { migrations } from './migrations'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -78,8 +79,11 @@ export default buildConfig({
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URL || '' },
-    // Dev pushes schema automatically; production uses migrations (see README).
+    // Dev pushes schema automatically; production runs src/migrations on startup and during
+    // `next build` (see README). SKIP_PROD_MIGRATIONS=1 turns that off for local production builds
+    // against a database that `pnpm dev` already set up (Payload would otherwise stop and ask).
     push: process.env.NODE_ENV !== 'production',
+    prodMigrations: process.env.SKIP_PROD_MIGRATIONS === '1' ? undefined : migrations,
   }),
   sharp,
   plugins: [

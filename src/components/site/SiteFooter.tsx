@@ -34,7 +34,7 @@ export async function SiteFooter({ data }: { data: SiteData }) {
     <footer className="bg-ink pb-28 text-cream lg:pb-0">
       <div className="container-site grid gap-12 pt-16 pb-12 lg:grid-cols-[1.3fr_2fr] lg:gap-20 lg:pt-24">
         <div className="flex flex-col gap-6">
-          <Link href="/" aria-label={company} className="self-start">
+          <Link href="/" className="self-start">
             <Logo tone="dark" subline={branding.logoSubline ?? 'DEVELOPMENTS LTD.'} />
           </Link>
           {footer.about ? <p className="max-w-sm text-body text-cream/70">{footer.about}</p> : null}

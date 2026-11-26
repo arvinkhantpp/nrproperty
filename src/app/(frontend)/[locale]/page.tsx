@@ -12,9 +12,15 @@ type Props = { params: Promise<{ locale: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const locale = (await params).locale as Locale
   const page = await getPage('home', locale)
-  const meta = buildMetadata({ seo: page?.seo, path: '/', locale })
-  // The home page uses the site-wide default title rather than the "%s · NR Property" template.
-  return { ...meta, title: page?.seo?.metaTitle ? { absolute: page.seo.metaTitle } : undefined }
+  const meta = await buildMetadata({ seo: page?.seo, path: '/', locale })
+  // The home page uses the site-wide default title and description (SEO global) unless the home
+  // page sets its own; never the "%s · NR Property" template.
+  const { title: _t, description: _d, ...rest } = meta
+  return {
+    ...rest,
+    ...(page?.seo?.metaTitle ? { title: { absolute: page.seo.metaTitle } } : {}),
+    ...(page?.seo?.metaDescription ? { description: page.seo.metaDescription } : {}),
+  }
 }
 
 export default async function HomePage({ params }: Props) {

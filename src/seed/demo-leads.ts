@@ -1,7 +1,7 @@
 /**
  * Demo leads for trying the admin dashboard and inbox locally: `pnpm seed:demo-leads`.
  * Every demo lead uses a 0100… phone number and is tagged utmContent=demo, so
- * `pnpm seed:demo-leads --clear` (or DEMO_CLEAR=1) removes them again. Never run against production.
+ * `DEMO_CLEAR=1 pnpm seed:demo-leads` removes them again. Never run against production.
  */
 import config from '@payload-config'
 import { getPayload } from 'payload'

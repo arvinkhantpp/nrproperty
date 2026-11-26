@@ -7,6 +7,7 @@ import { AreaLanding } from '@/components/site/AreaLanding'
 import type { Locale } from '@/i18n/routing'
 import { areaSlugFromPath } from '@/lib/areas'
 import { getArea, getPage } from '@/lib/cms'
+import { redirectOrNotFound } from '@/lib/redirects'
 import { buildMetadata } from '@/lib/metadata'
 
 type Props = { params: Promise<{ locale: string; slug: string }> }
@@ -45,10 +46,10 @@ export default async function CmsPage({ params }: Props) {
   const aSlug = areaSlug(slug)
   if (aSlug) {
     const area = await getArea(aSlug, locale as Locale)
-    if (!area) notFound()
+    if (!area) return redirectOrNotFound(`/${slug}`, locale as Locale)
     return <AreaLanding area={area} locale={locale as Locale} />
   }
   const page = await getPage(slug, locale as Locale)
-  if (!page) notFound()
+  if (!page) return redirectOrNotFound(`/${slug}`, locale as Locale)
   return <RenderBlocks blocks={page.layout} locale={locale as Locale} />
 }

@@ -22,7 +22,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const sp = await searchParams
   const t = await getTranslations({ locale, namespace: 'blog' })
   const { page } = await getRouteContent('blog', locale)
-  const meta = buildMetadata({ seo: page?.seo, title: t('metaTitle'), description: t('metaDescription'), path: '/blog', locale })
+  const meta = await buildMetadata({ seo: page?.seo, title: t('metaTitle'), description: t('metaDescription'), path: '/blog', locale })
   return sp.category || sp.page ? { ...meta, robots: { index: false, follow: true } } : meta
 }
 
@@ -79,9 +79,9 @@ export default async function BlogPage({ params, searchParams }: Props) {
 
           {res.docs.length ? (
             <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-              {res.docs.map((p) => (
+              {res.docs.map((p, i) => (
                 <li key={p.id}>
-                  <PostCard post={p} locale={locale} categoryLabel={p.category ? t(`categories.${p.category}`) : undefined} />
+                  <PostCard post={p} locale={locale} headingLevel={2} priority={i === 0} categoryLabel={p.category ? t(`categories.${p.category}`) : undefined} />
                 </li>
               ))}
             </ul>
