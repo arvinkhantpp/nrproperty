@@ -10,6 +10,7 @@ import { BrochureButton, ProjectMobileBar, ProjectSidebar } from '@/components/p
 import { ProjectGallery } from '@/components/projects/ProjectGallery'
 import { VideoEmbed } from '@/components/projects/VideoEmbed'
 import { RichText } from '@/components/site/RichText'
+import { TrackViewContent } from '@/components/tracking/Analytics'
 import { Accordion, Breadcrumbs, Icon, ProjectCard, StatusBadge, type IconName, type ProjectStatus } from '@/components/ui'
 import type { Locale } from '@/i18n/routing'
 import { getProject, getProjects } from '@/lib/cms'
@@ -353,6 +354,7 @@ export default async function ProjectPage({ params }: Props) {
       ) : null}
 
       <ProjectMobileBar projectId={id} projectName={name} />
+      <TrackViewContent id={id} name={name} price={p.showPrice ? p.startingPrice : null} />
     </>
   )
 }

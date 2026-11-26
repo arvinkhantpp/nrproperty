@@ -276,5 +276,11 @@
     "monthly": "Estimated monthly EMI",
     "loanAmount": "Loan amount {amount}",
     "disclaimer": "An estimate only. Your bank will confirm the actual rate and instalment."
+  },
+  "consent": {
+    "label": "Cookie choices",
+    "body": "We use cookies to measure our ads and improve the site. See our <link>Privacy Policy</link>.",
+    "accept": "Accept",
+    "decline": "Decline"
   }
 }
