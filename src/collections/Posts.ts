@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { isAdminOrEditor } from '@/access/roles'
+import { previewUrl } from '@/admin/lib/preview'
 import { requiredInEnglish, seoGroup, slugField } from '@/fields'
 import { revalidateHooks } from '@/hooks/revalidate'
 
@@ -11,6 +12,7 @@ export const Posts: CollectionConfig = {
     useAsTitle: 'title',
     group: 'Content',
     defaultColumns: ['title', 'category', 'publishedAt', '_status'],
+    preview: previewUrl('/blog'),
   },
   access: {
     read: ({ req }) => (req.user ? true : { _status: { equals: 'published' } }),
@@ -27,7 +29,7 @@ export const Posts: CollectionConfig = {
     { name: 'cover', type: 'upload', relationTo: 'media' },
     { name: 'body', type: 'richText', localized: true },
     { name: 'relatedProjects', type: 'relationship', relationTo: 'projects', hasMany: true },
-    seoGroup(),
+    seoGroup({ basePath: '/blog', descriptionField: 'excerpt' }),
     slugField('title'),
     {
       name: 'publishedAt',

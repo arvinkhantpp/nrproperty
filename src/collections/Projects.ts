@@ -1,6 +1,7 @@
 import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 
 import { anyone, isAdminOrEditor } from '@/access/roles'
+import { previewUrl } from '@/admin/lib/preview'
 import { PROJECT_STATUSES, PROJECT_TYPES, requiredInEnglish, seoGroup, slugify } from '@/fields'
 import { revalidateHooks } from '@/hooks/revalidate'
 
@@ -35,6 +36,7 @@ export const Projects: CollectionConfig = {
     group: 'Content',
     listSearchableFields: ['name', 'slug', 'address'],
     description: 'Every project appears on /projects and gets its own page automatically.',
+    preview: previewUrl('/projects'),
   },
   access: {
     read: anyone,
@@ -303,8 +305,13 @@ export const Projects: CollectionConfig = {
             },
           ],
         },
-        { label: 'SEO', fields: [seoGroup()] },
+        { label: 'SEO', fields: [seoGroup({ basePath: '/projects', titleField: 'name', descriptionField: 'tagline' })] },
       ],
+    },
+    {
+      name: 'cardPreview',
+      type: 'ui',
+      admin: { position: 'sidebar', components: { Field: '/admin/components/ProjectPreview#ProjectPreview' } },
     },
     {
       name: 'slug',

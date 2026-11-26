@@ -2,6 +2,8 @@ import type { Access, CollectionConfig, FieldAccess } from 'payload'
 
 import { hasRole } from '@/access/roles'
 
+import { leadsExport } from './leadsExport'
+
 export const LEAD_TYPES = [
   { label: 'Quick enquiry', value: 'enquiry' },
   { label: 'Brochure', value: 'brochure' },
@@ -41,7 +43,9 @@ export const Leads: CollectionConfig = {
     group: 'Leads',
     listSearchableFields: ['name', 'phone', 'email'],
     pagination: { defaultLimit: 50 },
+    components: { beforeList: ['/admin/components/LeadsListBanner#LeadsListBanner'] },
   },
+  endpoints: [leadsExport],
   access: {
     read: readLeads,
     // Leads are created only by the website's form handler (server-side, access overridden).

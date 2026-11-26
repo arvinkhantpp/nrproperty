@@ -48,7 +48,20 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     meta: { titleSuffix: ' · NR Property Admin' },
+    // Gravatar would call out to a third party and shows a broken image offline.
+    avatar: 'default',
     importMap: { baseDir: path.resolve(dirname) },
+    components: {
+      graphics: {
+        Logo: '/admin/components/Brand#Logo',
+        Icon: '/admin/components/Brand#Icon',
+      },
+      beforeNavLinks: ['/admin/components/NavLinks#NavLinks'],
+      views: {
+        dashboard: { Component: '/admin/views/Dashboard#Dashboard' },
+        leadsInbox: { Component: '/admin/views/LeadsInbox#LeadsInbox', path: '/leads-inbox' },
+      },
+    },
   },
   collections: [Leads, LeadFiles, ...collections, Users],
   globals: globals.map(hideFromSales),

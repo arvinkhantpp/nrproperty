@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { isAdminOrEditor } from '@/access/roles'
 import { pageBlocks } from '@/blocks/config'
+import { previewUrl } from '@/admin/lib/preview'
 import { requiredInEnglish, seoGroup, slugField } from '@/fields'
 import { revalidateHooks } from '@/hooks/revalidate'
 
@@ -16,6 +17,7 @@ export const Pages: CollectionConfig = {
     group: 'Content',
     defaultColumns: ['title', 'slug', '_status', 'updatedAt'],
     description: 'Drag sections to reorder, tick "Hide this section" to hide one.',
+    preview: previewUrl(''),
   },
   access: {
     read: ({ req }) => (req.user ? true : { _status: { equals: 'published' } }),
@@ -31,7 +33,7 @@ export const Pages: CollectionConfig = {
       type: 'tabs',
       tabs: [
         { label: 'Sections', fields: [{ name: 'layout', type: 'blocks', blocks: pageBlocks }] },
-        { label: 'SEO', fields: [seoGroup()] },
+        { label: 'SEO', fields: [seoGroup({ basePath: '' })] },
       ],
     },
     slugField('title'),

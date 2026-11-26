@@ -17,7 +17,8 @@
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "screenshots": "node scripts/screenshots.mjs",
     "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/seed/index.ts",
-    "seed:fresh": "cross-env NODE_OPTIONS=--no-deprecation SEED_FORCE=1 payload run src/seed/index.ts"
+    "seed:fresh": "cross-env NODE_OPTIONS=--no-deprecation SEED_FORCE=1 payload run src/seed/index.ts",
+    "seed:demo-leads": "cross-env NODE_OPTIONS=--no-deprecation payload run src/seed/demo-leads.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1178.0",

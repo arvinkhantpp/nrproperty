@@ -1,3 +1,4 @@
+import { LeadsListBanner as LeadsListBanner_185c1628b19e01121fc1c5cf5e821d9f } from '../../../admin/components/LeadsListBanner'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -21,12 +22,20 @@ import { StrikethroughFeatureClient as StrikethroughFeatureClient_e70f5e05f09f93
 import { UnderlineFeatureClient as UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { SerpPreview as SerpPreview_33ee4aac1f941657667667194bc21d00 } from '../../../admin/components/SerpPreview'
+import { ProjectPreview as ProjectPreview_8190db4cabf3a84c8c5ca21857d02aed } from '../../../admin/components/ProjectPreview'
 import { ColorField as ColorField_72ee9fe55f81abe2c8ae550d52d0ab85 } from '../../../admin/fields/ColorField'
+import { Icon as Icon_1121b289be69ddf34efb4c0f74982a55 } from '../../../admin/components/Brand'
+import { Logo as Logo_1121b289be69ddf34efb4c0f74982a55 } from '../../../admin/components/Brand'
+import { NavLinks as NavLinks_e48bc0a85a7347dc4c5f53af6d61a375 } from '../../../admin/components/NavLinks'
+import { Dashboard as Dashboard_c7d7fc284b3b0552574b75a0421f4260 } from '../../../admin/views/Dashboard'
+import { LeadsInbox as LeadsInbox_0bd26740899320361c5542fb22c29135 } from '../../../admin/views/LeadsInbox'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 /** @type import('payload').ImportMap */
 export const importMap = {
+  "/admin/components/LeadsListBanner#LeadsListBanner": LeadsListBanner_185c1628b19e01121fc1c5cf5e821d9f,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -50,7 +59,14 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#UnderlineFeatureClient": UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "/admin/components/SerpPreview#SerpPreview": SerpPreview_33ee4aac1f941657667667194bc21d00,
+  "/admin/components/ProjectPreview#ProjectPreview": ProjectPreview_8190db4cabf3a84c8c5ca21857d02aed,
   "/admin/fields/ColorField#ColorField": ColorField_72ee9fe55f81abe2c8ae550d52d0ab85,
+  "/admin/components/Brand#Icon": Icon_1121b289be69ddf34efb4c0f74982a55,
+  "/admin/components/Brand#Logo": Logo_1121b289be69ddf34efb4c0f74982a55,
+  "/admin/components/NavLinks#NavLinks": NavLinks_e48bc0a85a7347dc4c5f53af6d61a375,
+  "/admin/views/Dashboard#Dashboard": Dashboard_c7d7fc284b3b0552574b75a0421f4260,
+  "/admin/views/LeadsInbox#LeadsInbox": LeadsInbox_0bd26740899320361c5542fb22c29135,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }
